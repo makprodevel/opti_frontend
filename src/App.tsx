@@ -16,16 +16,16 @@ function App() {
             <div className="App">
               <GoogleLogin
                 onSuccess= {async ({ credential }) => {
-                  const _ = await axios.get('http://localhost:8000/auth/google', 
+                  await axios.get('http://localhost:8000/auth/google', 
                     {
                       headers: {'Authorization': `Bearer ${credential}`},
                       withCredentials: true,
                     }
-                  );
+                  )
 
                   const result = await axios.get('http://localhost:8000/api/me', {
                     withCredentials: true,
-                  });
+                  })
 
                   console.log('Server response:', result.data);
                 }}
