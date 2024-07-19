@@ -1,10 +1,3 @@
-import './ChatList.css'
-
-
 export default function ListMessage() {
-    return (
-        <div id="list-messages">
-
-        </div>
-    )
+  return <div id="list-messages"></div>
 }
