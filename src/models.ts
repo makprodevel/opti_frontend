@@ -1,4 +1,4 @@
-export interface GetMeResponse {
+export interface IGetMe {
   email: string
   nickname: string
 }

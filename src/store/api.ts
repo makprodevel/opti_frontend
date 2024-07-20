@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { GetMeResponse } from '../models'
+import { IGetMe } from '../models'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
@@ -16,7 +16,7 @@ export const mainApi = createApi({
     fetchFn: customFetch
   }),
   endpoints: (build) => ({
-    getMe: build.query<GetMeResponse, void>({
+    getMe: build.query<IGetMe, void>({
       query: () => ({
         url: 'api/me'
       })
