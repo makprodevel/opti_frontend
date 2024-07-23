@@ -9,37 +9,56 @@ import {
 } from '@headlessui/react'
 import {
   Bars3Icon,
-  BellIcon,
+  // BellIcon,
   XMarkIcon,
   UserCircleIcon
 } from '@heroicons/react/24/outline'
-import GoogleLoginButton from './GoogleLogin'
-
-const user = {
-  name: 'Tom Cook'
-}
-const navigation: any[] = [
-  // { name: 'Chat', href: '#', current: true }
-]
-const userNavigation = [
-  // { name: 'Your Profile', href: '#' },
-  // { name: 'Settings', href: '#' },
-  {
-    name: 'Sign out',
-    href: '#',
-    callBack: () => {
-      console.log('logout')
-    }
-  }
-]
+import { useActions } from '../hooks/action'
+import { useAppSelector } from '../hooks/redux'
+import { useCallback, useEffect, useState } from 'react'
+import axios from 'axios'
+import { IGetMe } from '../models'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
+  const { logOut, setNickname } = useActions()
+  const { isLogin } = useAppSelector((state) => state.login)
+  const { nickname } = useAppSelector((state) => state.nickname)
+
+  const fetchNickname = useCallback(async () => {
+    const response = await axios.get('http://localhost:8000/api/me', {
+      withCredentials: true
+    })
+    const data: IGetMe = response.data
+    setNickname(data.nickname)
+  }, [])
+
+  useEffect(() => {
+    if (isLogin) {
+      fetchNickname()
+    } else setNickname('anonym')
+  }, [isLogin])
+
+  const navigation: any[] = [
+    // { name: 'Chat', href: '#', current: true }
+  ]
+  const userNavigation = [
+    // { name: 'Your Profile', href: '#' },
+    // { name: 'Settings', href: '#' },
+    {
+      name: 'Sign out',
+      href: '#',
+      callBack: () => {
+        logOut()
+      }
+    }
+  ]
+
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 flex-none">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -70,6 +89,7 @@ export default function Header() {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
+              <span className="text-3xl text-red-600">{nickname}</span>
               {/* <button
                 type="button"
                 className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -148,17 +168,17 @@ export default function Header() {
           <div className="flex items-center px-5">
             <div className="ml-3">
               <div className="text-base font-medium leading-none text-white">
-                {user.name}
+                tom cook
               </div>
             </div>
-            <button
+            {/* <button
               type="button"
               className="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
               <span className="absolute -inset-1.5" />
               <span className="sr-only">View notifications</span>
               <BellIcon aria-hidden="true" className="h-6 w-6" />
-            </button>
+            </button> */}
           </div>
           <div className="mt-3 space-y-1 px-2">
             {userNavigation.map((item) => (

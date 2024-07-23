@@ -20,8 +20,15 @@ export const mainApi = createApi({
       query: () => ({
         url: 'api/me'
       })
+    }),
+    changeNickname: build.query<string, string>({
+      query: (newNickname: string) => ({
+        url: 'api/',
+        method: 'PUT',
+        body: JSON.stringify({ new_nickname: newNickname })
+      })
     })
   })
 })
 
-export const { useGetMeQuery } = mainApi
+export const { useLazyGetMeQuery, useLazyChangeNicknameQuery } = mainApi
