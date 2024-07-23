@@ -22,7 +22,6 @@ export default function Chatbox() {
             GetPreview(data as IGetPreview)
             break
           case ActionType.getChat:
-            const buf = {}
             AddChat(data as IGetChat)
             break
           default:
