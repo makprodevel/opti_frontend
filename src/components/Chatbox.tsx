@@ -2,14 +2,19 @@ import ListMessage from './ChatList.tsx'
 import Chat from './Chat.tsx'
 import { useChatContext } from './ChatContext.tsx'
 import { useEffect, useRef } from 'react'
-import { ActionBase, ActionType, IGetChat, IGetPreview } from '../models.ts'
+import {
+  ActionBase,
+  ActionType,
+  IGetChat,
+  IGetPreview,
+  IReceivedMessage
+} from '../models.ts'
 import { useActions } from '../hooks/action.ts'
 
 export default function Chatbox() {
-  //@ts-ignore
   const { setWs } = useChatContext()
   const isRun = useRef(false)
-  const { GetPreview, AddChat } = useActions()
+  const { GetPreview, AddChat, RecieveMessage } = useActions()
   useEffect(() => {
     if (!isRun.current) {
       isRun.current = true
@@ -24,6 +29,9 @@ export default function Chatbox() {
           case ActionType.getChat:
             AddChat(data as IGetChat)
             break
+          case ActionType.recieveMessage:
+            RecieveMessage(data as IReceivedMessage)
+            break
           default:
             console.log(data)
         }
@@ -36,8 +44,8 @@ export default function Chatbox() {
 
   return (
     <main className="flex-1">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 h-full">
-        <div className="flex justify-between gap-x-40 h-full">
+      <div className="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex h-full justify-between gap-x-40">
           <ListMessage />
           <Chat />
         </div>

@@ -8,7 +8,8 @@ export enum ActionType {
   getPreview = 'get_preview',
   readMessage = 'read_message',
   getChat = 'get_chat',
-  sendMessage = 'send_message'
+  sendMessage = 'send_message',
+  recieveMessage = 'send_message'
 }
 
 export interface IGetMe {
@@ -16,16 +17,7 @@ export interface IGetMe {
   nickname: string
 }
 
-export interface IReceivedMessage {
-  id: UUID
-  text: string
-  time: Date
-}
-
-export interface ISendMessage extends ActionBase {
-  message_id: UUID
-  message: string
-  message_time: string
+export interface IReceivedMessage extends ActionBase, Message {
   sender_id: UUID
 }
 

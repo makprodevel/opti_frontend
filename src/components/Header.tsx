@@ -7,17 +7,20 @@ import {
   MenuItem,
   MenuItems
 } from '@headlessui/react'
+
 import {
   Bars3Icon,
   // BellIcon,
   XMarkIcon,
   UserCircleIcon
 } from '@heroicons/react/24/outline'
+
 import { useActions } from '../hooks/action'
 import { useAppSelector } from '../hooks/redux'
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { IGetMe } from '../models'
+import ChangeNickname from './ChangeNickname'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -27,8 +30,10 @@ export default function Header() {
   const { logOut, setNickname } = useActions()
   const { isLogin } = useAppSelector((state) => state.login)
   const { nickname } = useAppSelector((state) => state.nickname)
+  const [isChangeNicknameOpen, setIsChangeNicknameOpen] =
+    useState<boolean>(false)
 
-  const fetchNickname = useCallback(async () => {
+  const getNickname = useCallback(async () => {
     const response = await axios.get('http://localhost:8000/api/me', {
       withCredentials: true
     })
@@ -38,16 +43,21 @@ export default function Header() {
 
   useEffect(() => {
     if (isLogin) {
-      fetchNickname()
+      getNickname()
     } else setNickname('anonym')
   }, [isLogin])
 
-  const navigation: any[] = [
-    // { name: 'Chat', href: '#', current: true }
-  ]
-  const userNavigation = [
-    // { name: 'Your Profile', href: '#' },
-    // { name: 'Settings', href: '#' },
+  const navigation: any[] = [{ name: 'Chat', href: '#', current: true }]
+  const userNavigation: {
+    name: string
+    href: string
+    callBack: () => void
+  }[] = [
+    {
+      name: 'change nick',
+      href: '#',
+      callBack: setIsChangeNicknameOpen.bind(null, true)
+    },
     {
       name: 'Sign out',
       href: '#',
@@ -58,12 +68,16 @@ export default function Header() {
   ]
 
   return (
-    <Disclosure as="nav" className="bg-gray-800 flex-none">
+    <Disclosure as="nav" className="flex-none bg-gray-800">
+      <ChangeNickname
+        isOpen={isChangeNicknameOpen}
+        setIsOpen={setIsChangeNicknameOpen}
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="tracking-[.25em] text-3xl inter-font text-gray-100">
+              <div className="inter-font text-3xl tracking-[.25em] text-gray-100">
                 Opti
               </div>
             </div>
@@ -88,8 +102,7 @@ export default function Header() {
             </div>
           </div>
           <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              <span className="text-3xl text-red-600">{nickname}</span>
+            <div className="ml-4 flex items-center gap-4 md:ml-6">
               {/* <button
                 type="button"
                 className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -98,6 +111,7 @@ export default function Header() {
                 <span className="sr-only">View notifications</span>
                 <BellIcon aria-hidden="true" className="h-6 w-6" />
               </button> */}
+              <span className="text-xl text-gray-400">{nickname}</span>
 
               {/* Profile dropdown */}
               <Menu as="div" className="relative ml-3">
@@ -112,7 +126,7 @@ export default function Header() {
                   transition
                   className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
-                  {userNavigation.map((item) => (
+                  {userNavigation.map((item: any) => (
                     <MenuItem key={item.name}>
                       <a
                         href={item.href}
@@ -168,7 +182,7 @@ export default function Header() {
           <div className="flex items-center px-5">
             <div className="ml-3">
               <div className="text-base font-medium leading-none text-white">
-                tom cook
+                {nickname}
               </div>
             </div>
             {/* <button

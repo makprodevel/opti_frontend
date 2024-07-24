@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { IGetPreview, UUID } from '../models'
+import { IGetChat, IGetPreview, IReceivedMessage, UUID } from '../models'
 
 const LS_CHAT = 'chat'
 
@@ -12,8 +12,7 @@ export interface IMessage {
 }
 
 export interface IChat {
-  user_id: UUID
-  messages: IMessage[]
+  [key: UUID]: IMessage[]
 }
 
 interface IChatRow {
@@ -30,12 +29,15 @@ interface IUsers {
 interface ChatStore {
   users: IUsers
   chatList: IChatRow[]
-  chats: IChat[]
+  chats: IChat
 }
 
-const initialState: ChatStore = JSON.parse(
-  localStorage.getItem(LS_CHAT) || '{users:{},chatList:[],chats:[]}'
-)
+const initialState: ChatStore = (localStorage.getItem(LS_CHAT) &&
+  JSON.parse(localStorage.getItem(LS_CHAT) || '')) || {
+  users: {},
+  chatList: [],
+  chats: {}
+}
 
 export const chatSlice = createSlice({
   name: 'chat',
@@ -53,14 +55,27 @@ export const chatSlice = createSlice({
           is_viewed: chatRow.is_viewed
         })
       })
+
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
     },
 
-    AddChat(state: ChatStore, action: PayloadAction<IChat>) {
-      state.chats = state.chats.filter(
-        (chat) => chat.user_id != action.payload.user_id
-      )
-      state.chats.push(action.payload)
+    AddChat(state: ChatStore, action: PayloadAction<IGetChat>) {
+      const msg_list = action.payload.messages
+      state.chats[action.payload.user_id] = []
+      msg_list.forEach((msg) => state.chats[action.payload.user_id].push(msg))
+
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
+    },
+
+    RecieveMessage(state: ChatStore, action: PayloadAction<IReceivedMessage>) {
+      const sender: UUID = action.payload.sender_id
+      const msg = action.payload
+      console.log(msg)
+      if (!(sender in state.chats)) state.chats[sender] = []
+      console.log(state.chats[sender])
+      if (state.chats[sender].filter((msgg) => msgg.id == msg.id).length === 0)
+        state.chats[sender].push(msg) // на этой строке ошибка
+
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
     }
   }

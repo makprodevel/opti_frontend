@@ -21,21 +21,22 @@ export default function ChatRow(props: ChatRowProps) {
     <Radio
       key={props.user}
       value={props}
-      className="flex justify-between gap-x-6 py-5 data-[checked]:bg-gray-300"
+      className="flex items-center justify-between gap-x-6 border hover:bg-gray-300 data-[checked]:bg-gray-300"
       onClick={switchChatOnClick}
     >
-      <div className="flex  min-w-0 gap-x-4">
+      <div className="flex min-w-0 gap-x-4 p-5">
         <div className="min-w-0 flex-auto">
-          <p className="text-sm font-semibold leading-6 text-gray-900">
-            {props.nickname}
-          </p>
+          <p className="text-sm leading-6 text-gray-900">{props.nickname}</p>
         </div>
       </div>
-      <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-        <p className="mt-1 text-xs leading-5 text-gray-500">
-          {props.is_viewed && '*'}
-        </p>
-      </div>
+      {!props.is_viewed && (
+        <div className="shrink-0 p-4 sm:flex sm:flex-col sm:items-end">
+          <div
+            className="h-3 w-3 rounded-full bg-black opacity-40"
+            id="rrr"
+          ></div>
+        </div>
+      )}
     </Radio>
   )
 }
