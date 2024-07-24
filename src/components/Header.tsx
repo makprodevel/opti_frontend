@@ -81,7 +81,7 @@ export default function Header() {
                 Opti
               </div>
             </div>
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {navigation.map((item) => (
                   <a
@@ -99,7 +99,7 @@ export default function Header() {
                   </a>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center gap-4 md:ml-6">

@@ -9,7 +9,8 @@ export enum ActionType {
   readMessage = 'read_message',
   getChat = 'get_chat',
   sendMessage = 'send_message',
-  recieveMessage = 'send_message'
+  recieveMessage = 'receive_message',
+  deleteChat = 'delete_chat'
 }
 
 export interface IGetMe {

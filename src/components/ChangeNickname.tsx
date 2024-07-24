@@ -27,14 +27,14 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
       <Field className="flex flex-col items-center justify-between gap-4">
         <Input
           type="text"
-          className="border bg-gray-100"
+          className="rounded-xl border bg-gray-200 px-2 py-1"
           value={newNickname}
           onChange={(event) => {
             setNewNickname(event.target.value)
           }}
-        ></Input>
+        />
         <Button
-          className="rounded-full border bg-gray-200 px-6 py-3 hover:bg-gray-300"
+          className="rounded-xl border bg-gray-200 px-6 py-3 hover:bg-gray-300"
           onClick={changeNickname}
         >
           Изменить

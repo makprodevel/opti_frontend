@@ -12,7 +12,7 @@ import {
 import { useActions } from '../hooks/action.ts'
 
 export default function Chatbox() {
-  const { setWs } = useChatContext()
+  const { setWs, currentChat } = useChatContext()
   const isRun = useRef(false)
   const { GetPreview, AddChat, RecieveMessage } = useActions()
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function Chatbox() {
             RecieveMessage(data as IReceivedMessage)
             break
           default:
-            console.log(data)
+            console.error('unhandled data: ', data)
         }
       }
       new_ws.onopen = () => {
@@ -47,7 +47,7 @@ export default function Chatbox() {
       <div className="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex h-full justify-between gap-x-40">
           <ListMessage />
-          <Chat />
+          {currentChat && <Chat />}
         </div>
       </div>
     </main>

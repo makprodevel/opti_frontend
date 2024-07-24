@@ -8,7 +8,7 @@ export default function App() {
   const { isLogin } = useAppSelector((state) => state.login)
 
   return (
-    <div id="app" className="w-full h-full flex flex-col">
+    <div id="app" className="flex h-full w-full flex-col">
       <Header />
       <ChatProvider>
         {isLogin ? <Chatbox /> : <GoogleLoginButton />}
