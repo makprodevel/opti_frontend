@@ -1,6 +1,6 @@
 import { Radio } from '@headlessui/react'
-import { UUID } from '../models'
-import { useChatContext } from '../ChatContext'
+import { UUID } from '../../models'
+import { useChatContext } from '../../ChatContext'
 
 export interface ChatRowProps {
   user: UUID

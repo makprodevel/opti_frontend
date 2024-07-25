@@ -1,4 +1,4 @@
-import { IMessage } from '../store/chat'
+import { IMessage } from "../../store/chat";
 
 export default function Message(msg: IMessage) {
   return !msg.owning ? (

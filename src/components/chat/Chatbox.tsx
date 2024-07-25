@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { useChatContext } from '../ChatContext'
+import { useChatContext } from '../../ChatContext'
 import Message from './Message'
-import { useAppSelector } from '../hooks/redux'
+import { useAppSelector } from '../../hooks/redux'
 import {
   Button,
   Input,
@@ -10,54 +10,39 @@ import {
   MenuItem,
   MenuItems
 } from '@headlessui/react'
-import { ActionType } from '../models'
-import { IMessage } from '../store/chat'
+import { IMessage } from '../../store/chat'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
+import useWebsocket from '../../hooks/websocket'
 
 export default function Chatbox() {
-  const { currentChat, ws, setCurrentChat } = useChatContext()
+  const { currentChat, setCurrentChat, isWsOpen } = useChatContext()
   const { chats, users } = useAppSelector((state) => state.chat)
   const [message, setMessage] = useState<string>('')
+  const { getChat, sendMessage, deleteChat } = useWebsocket()
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
   const inputMessageRef = useRef<HTMLInputElement>(null)
+
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chats])
 
   useEffect(() => {
-    if (currentChat && ws?.readyState == WebSocket.OPEN)
-      ws.send(
-        JSON.stringify({
-          action_type: 'get_chat',
-          recipient_id: currentChat
-        })
-      )
+    if (currentChat && isWsOpen) getChat(currentChat)
   }, [currentChat])
 
-  async function sendMessage(event?: React.FormEvent<HTMLFormElement>) {
+  async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault()
-    if (message && currentChat && ws?.readyState === WebSocket.OPEN) {
-      await ws.send(
-        JSON.stringify({
-          action_type: ActionType.sendMessage,
-          recipient_id: currentChat,
-          message: message
-        })
-      )
+    if (message.trim() && currentChat && isWsOpen) {
+      await sendMessage(currentChat, message.trim())
       setMessage('')
       inputMessageRef.current?.focus()
     }
   }
 
   async function deleteThisChat() {
-    if (currentChat && ws?.readyState === WebSocket.OPEN) {
-      await ws.send(
-        JSON.stringify({
-          action_type: ActionType.deleteChat,
-          id: currentChat
-        })
-      )
+    if (currentChat && isWsOpen) {
+      await deleteChat(currentChat)
     }
     setCurrentChat('')
   }
@@ -103,7 +88,7 @@ export default function Chatbox() {
       <form
         className="flex h-16 grow-0 items-center justify-center"
         onSubmit={(event) => {
-          sendMessage(event)
+          sendMessageHandler(event)
         }}
       >
         <Input
@@ -120,7 +105,7 @@ export default function Chatbox() {
         <Button
           className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
           onClick={() => {
-            sendMessage()
+            sendMessageHandler()
           }}
           type="submit"
         >

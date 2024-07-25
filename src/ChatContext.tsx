@@ -1,18 +1,20 @@
-import { ReactNode, useContext, useState, createContext } from 'react'
+import { ReactNode, useContext, useState, createContext, useRef } from 'react'
 import { UUID } from './models'
 
 interface IChatContext {
-  ws: WebSocket | null
-  setWs: React.Dispatch<React.SetStateAction<WebSocket | null>>
+  ws: React.MutableRefObject<WebSocket | null>
   currentChat: string | null
   setCurrentChat: React.Dispatch<React.SetStateAction<string | null>>
+  isWsOpen: boolean
+  setIsWsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ChatContext = createContext<IChatContext>({
-  ws: null,
-  setWs: () => {},
+  ws: { current: null },
   currentChat: null,
-  setCurrentChat: () => {}
+  setCurrentChat: () => {},
+  isWsOpen: false,
+  setIsWsOpen: () => {}
 })
 
 export const useChatContext = () => {
@@ -20,11 +22,14 @@ export const useChatContext = () => {
 }
 
 export const ChatProvider = ({ children }: { children: ReactNode }) => {
-  const [ws, setWs] = useState<WebSocket | null>(null)
+  const ws = useRef<WebSocket | null>(null)
   const [currentChat, setCurrentChat] = useState<UUID | null>(null)
+  const [isWsOpen, setIsWsOpen] = useState<boolean>(false)
 
   return (
-    <ChatContext.Provider value={{ ws, setWs, currentChat, setCurrentChat }}>
+    <ChatContext.Provider
+      value={{ ws, currentChat, setCurrentChat, isWsOpen, setIsWsOpen }}
+    >
       {children}
     </ChatContext.Provider>
   )
