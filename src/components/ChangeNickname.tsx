@@ -13,13 +13,15 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
   const [newNickname, setNewNickname] = useState<string>('')
   const { setNickname } = useActions()
   async function changeNickname() {
-    const response = await axios.put(
-      'http://localhost:8000/api/me',
-      { new_nickname: newNickname },
-      { withCredentials: true }
-    )
-    setNickname(response.data)
-    props.setIsOpen(false)
+    if (newNickname.trim()) {
+      const response = await axios.put<string>(
+        'http://localhost:8000/api/me',
+        { new_nickname: newNickname.trim() },
+        { withCredentials: true }
+      )
+      setNickname(response.data)
+      props.setIsOpen(false)
+    }
   }
 
   return (

@@ -21,6 +21,7 @@ import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { IGetMe } from '../models'
 import ChangeNickname from './ChangeNickname'
+import { Link } from 'react-router-dom'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -34,11 +35,10 @@ export default function Header() {
     useState<boolean>(false)
 
   const getNickname = useCallback(async () => {
-    const response = await axios.get('http://localhost:8000/api/me', {
+    const response = await axios.get<IGetMe>('http://localhost:8000/api/me', {
       withCredentials: true
     })
-    const data: IGetMe = response.data
-    setNickname(data.nickname)
+    setNickname(response.data.nickname)
   }, [])
 
   useEffect(() => {
@@ -47,7 +47,10 @@ export default function Header() {
     } else setNickname('anonym')
   }, [isLogin])
 
-  const navigation: any[] = [{ name: 'Chat', href: '#', current: true }]
+  const navigation: any[] = [
+    { name: 'Чат', href: '/', current: true },
+    { name: 'О нас', href: '/about', current: true }
+  ]
   const userNavigation: {
     name: string
     href: string
@@ -81,12 +84,12 @@ export default function Header() {
                 Opti
               </div>
             </div>
-            {/* <div className="hidden md:block">
+            <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     aria-current={item.current ? 'page' : undefined}
                     className={classNames(
                       item.current
@@ -96,10 +99,10 @@ export default function Header() {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
-            </div> */}
+            </div>
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center gap-4 md:ml-6">
