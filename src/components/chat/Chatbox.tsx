@@ -12,13 +12,14 @@ import {
 } from '@headlessui/react'
 import { IMessage } from '../../store/chat'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
-import useWebsocket from '../../hooks/websocket'
+import { useWebsocketContext } from '../../hooks/websocket'
 
 export default function Chatbox() {
-  const { currentChat, setCurrentChat, isWsOpen } = useChatContext()
+  const { isWsOpen } = useWebsocketContext()
+  const { currentChat, setCurrentChat } = useChatContext()
   const { chats, users } = useAppSelector((state) => state.chat)
   const [message, setMessage] = useState<string>('')
-  const { getChat, sendMessage, deleteChat } = useWebsocket()
+  const { getChat, sendMessage, deleteChat } = useWebsocketContext()
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
   const inputMessageRef = useRef<HTMLInputElement>(null)

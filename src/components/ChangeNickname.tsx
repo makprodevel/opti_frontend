@@ -34,6 +34,8 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
           onChange={(event) => {
             setNewNickname(event.target.value)
           }}
+          placeholder="введите новое имя"
+          autoFocus
         />
         <Button
           className="rounded-xl border bg-gray-200 px-6 py-3 hover:bg-gray-300"

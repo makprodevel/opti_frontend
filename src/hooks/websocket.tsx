@@ -1,5 +1,12 @@
-import { useEffect, useRef } from 'react'
-import { useChatContext } from '../ChatContext'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
+
 import {
   ActionBase,
   ActionType,
@@ -8,13 +15,32 @@ import {
   IReceivedMessage,
   UUID
 } from '../models'
-import { useActions } from './action'
-import { useAppSelector } from './redux'
 
-export default function useWebsocket() {
-  const { ws, setIsWsOpen } = useChatContext()
+import { useActions } from './action'
+
+interface IWebsocketContext {
+  getChat(chat: UUID): Promise<void>
+  sendMessage(chat: UUID, message: string): Promise<void>
+  deleteChat(chat: UUID): Promise<void>
+  isWsOpen: boolean
+}
+
+const WebsocketContext = createContext<IWebsocketContext>({
+  getChat: async () => {},
+  sendMessage: async () => {},
+  deleteChat: async () => {},
+  isWsOpen: false
+})
+
+export const useWebsocketContext = () => {
+  return useContext(WebsocketContext)
+}
+
+export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
+  const ws = useRef<WebSocket | null>(null)
+  const [isWsOpen, setIsWsOpen] = useState<boolean>(false)
+
   const { GetPreview, AddChat, RecieveMessage } = useActions()
-  const { isLogin } = useAppSelector((state) => state.login)
   const isRun = useRef<boolean>(false)
 
   const wsSend = async (
@@ -56,16 +82,23 @@ export default function useWebsocket() {
     }
     ws_.onclose = () => {
       setIsWsOpen(false)
-      OpenWebsocket()
+      if (isRun.current) OpenWebsocket()
+    }
+    ws_.onerror = (err) => {
+      console.error('WebSocket encountered error: ', err, 'Closing socket')
+      ws_.close()
     }
   }
 
   useEffect(() => {
-    if (isLogin && ws.current == null && !isRun.current) {
-      isRun.current = true
-      OpenWebsocket()
+    isRun.current = true
+    OpenWebsocket()
+
+    return () => {
+      isRun.current = false
+      ws.current?.close()
     }
-  }, [isLogin])
+  }, [])
 
   async function getChat(chat: UUID) {
     await wsSend(ActionType.getChat, {
@@ -86,5 +119,11 @@ export default function useWebsocket() {
     })
   }
 
-  return { getChat, sendMessage, deleteChat }
+  return (
+    <WebsocketContext.Provider
+      value={{ getChat, sendMessage, deleteChat, isWsOpen }}
+    >
+      {children}
+    </WebsocketContext.Provider>
+  )
 }
