@@ -23,7 +23,11 @@ export default function Message(msg: IMessage) {
         <p className={`text-sm ${own ? 'text-white' : 'text-gray-900'}`}>
           {msg.text}
         </p>
-        <p className="text-right text-[.6rem] text-gray-200">{time}</p>
+        <p
+          className={`text-right text-[.6rem] ${own ? 'text-gray-200' : 'text-gray-900'}`}
+        >
+          {time}
+        </p>
       </div>
     </div>
   )

@@ -68,11 +68,12 @@ export const chatSlice = createSlice({
     },
 
     RecieveMessage(state: ChatStore, action: PayloadAction<IReceivedMessage>) {
-      const sender: UUID = action.payload.sender_id
+      const sender: UUID = action.payload.other_id
       const msg = action.payload
       if (!(sender in state.chats)) state.chats[sender] = []
       if (state.chats[sender].filter((msgg) => msgg.id == msg.id).length === 0)
         state.chats[sender].push(msg)
+
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
     }
   }

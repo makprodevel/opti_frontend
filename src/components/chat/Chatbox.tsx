@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useChatContext } from '../../ChatContext'
 import Message from './Message'
 import { useAppSelector } from '../../hooks/redux'
@@ -24,13 +24,22 @@ export default function Chatbox() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
   const inputMessageRef = useRef<HTMLInputElement>(null)
 
+  const message_list = useMemo((): IMessage[] => {
+    if (currentChat) return chats[currentChat]
+    else return []
+  }, [currentChat, chats])
+
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [chats])
 
   useEffect(() => {
-    if (currentChat && isWsOpen) getChat(currentChat)
+    endOfMessagesRef.current?.scrollIntoView()
   }, [currentChat])
+
+  useEffect(() => {
+    if (currentChat && isWsOpen) getChat(currentChat)
+  }, [isWsOpen])
 
   async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault()
@@ -58,7 +67,7 @@ export default function Chatbox() {
           <div>
             <MenuButton>
               <span className="absolute -inset-1.5" />
-              <span className="sr-only">Open chat menu</span>
+              <span className="sr-only">Открыть меню чата</span>
               <EllipsisHorizontalIcon className="w-8 rounded-full text-gray-400" />
             </MenuButton>
           </div>
@@ -79,11 +88,9 @@ export default function Chatbox() {
         </Menu>
       </div>
       <div className="mb-4 flex h-4 flex-grow flex-col gap-4 overflow-y-auto scroll-auto py-4">
-        {currentChat &&
-          currentChat in chats &&
-          chats[currentChat].map((msg: IMessage) => (
-            <Message key={msg.id} {...msg} />
-          ))}
+        {message_list.map((msg: IMessage) => (
+          <Message key={msg.id} {...msg} />
+        ))}
         <div ref={endOfMessagesRef} />
       </div>
       <form

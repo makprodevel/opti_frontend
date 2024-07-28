@@ -19,7 +19,7 @@ export interface IGetMe {
 }
 
 export interface IReceivedMessage extends ActionBase, Message {
-  sender_id: UUID
+  other_id: UUID
 }
 
 export interface IGetChat extends ActionBase {
