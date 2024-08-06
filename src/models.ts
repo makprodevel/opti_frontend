@@ -45,6 +45,7 @@ export interface ChatList {
   message: string
   last_message_time: string
   is_viewed: boolean
+  count: number
 }
 
 export interface IReadMessage extends ActionBase {

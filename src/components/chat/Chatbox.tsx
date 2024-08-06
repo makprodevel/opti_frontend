@@ -24,10 +24,10 @@ export default function Chatbox() {
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
   const inputMessageRef = useRef<HTMLInputElement>(null)
 
-  const message_list = useMemo((): IMessage[] => {
-    if (currentChat) return chats[currentChat]
-    else return []
-  }, [currentChat, chats])
+  const message_list: IMessage[] =
+    useMemo(() => {
+      if (currentChat) return chats[currentChat]
+    }, [currentChat, chats]) || []
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -39,7 +39,7 @@ export default function Chatbox() {
 
   useEffect(() => {
     if (currentChat && isWsOpen) getChat(currentChat)
-  }, [isWsOpen])
+  }, [isWsOpen, currentChat])
 
   async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault()

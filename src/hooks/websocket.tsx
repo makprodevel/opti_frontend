@@ -78,7 +78,6 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     }
     ws_.onopen = () => {
       setIsWsOpen(true)
-      wsSend(ActionType.getPreview)
     }
     ws_.onclose = () => {
       setIsWsOpen(false)

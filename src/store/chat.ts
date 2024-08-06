@@ -20,6 +20,7 @@ interface IChatRow {
   text: string
   time: string
   is_viewed: boolean
+  count: number
 }
 
 interface IUsers {
@@ -52,7 +53,8 @@ export const chatSlice = createSlice({
           user: chatRow.user_id,
           text: chatRow.message,
           time: chatRow.last_message_time,
-          is_viewed: chatRow.is_viewed
+          is_viewed: chatRow.is_viewed,
+          count: chatRow.count
         })
       })
 
@@ -68,11 +70,23 @@ export const chatSlice = createSlice({
     },
 
     RecieveMessage(state: ChatStore, action: PayloadAction<IReceivedMessage>) {
-      const sender: UUID = action.payload.other_id
+      const other_id: UUID = action.payload.other_id
       const msg = action.payload
-      if (!(sender in state.chats)) state.chats[sender] = []
-      if (state.chats[sender].filter((msgg) => msgg.id == msg.id).length === 0)
-        state.chats[sender].push(msg)
+      if (!(other_id in state.chats)) state.chats[other_id] = []
+      if (
+        state.chats[other_id].filter((msgg) => msgg.id == msg.id).length === 0
+      ) {
+        state.chats[other_id].push(msg)
+
+        state.chatList.map((row) => {
+          if (row.user == other_id) {
+            row.text = msg.text
+            row.time = msg.time
+            row.is_viewed = false
+            row.count++
+          }
+        })
+      }
 
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
     }
