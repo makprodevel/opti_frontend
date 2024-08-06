@@ -1,5 +1,9 @@
 export type UUID = string
 
+export interface IChangeNickname {
+  new_nickname: string
+}
+
 export interface ActionBase {
   action_type: ActionType
 }

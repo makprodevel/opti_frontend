@@ -1,8 +1,8 @@
 import { Button, Field, Input } from '@headlessui/react'
 import Modal from './Modal'
-import { Dispatch, SetStateAction, useState } from 'react'
-import axios from 'axios'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useActions } from '../hooks/action'
+import { useChangeNicknameMutation } from '../store/api'
 
 interface ChangeNicknameProps {
   isOpen: boolean
@@ -12,17 +12,23 @@ interface ChangeNicknameProps {
 export default function ChangeNickname(props: ChangeNicknameProps) {
   const [newNickname, setNewNickname] = useState<string>('')
   const { setNickname } = useActions()
+  const [
+    triggerChangeNickname,
+    { data: changeNicknameData, isLoading: isChangingNickname }
+  ] = useChangeNicknameMutation()
+
   async function changeNickname() {
     if (newNickname.trim()) {
-      const response = await axios.put<string>(
-        'http://localhost:8000/api/me',
-        { new_nickname: newNickname.trim() },
-        { withCredentials: true }
-      )
-      setNickname(response.data)
+      triggerChangeNickname(newNickname.trim())
       props.setIsOpen(false)
+      setNewNickname('')
     }
   }
+
+  useEffect(() => {
+    if (!isChangingNickname && changeNicknameData)
+      setNickname(changeNicknameData.new_nickname)
+  }, [changeNicknameData, isChangingNickname])
 
   return (
     <Modal title="Смена имени" {...props}>

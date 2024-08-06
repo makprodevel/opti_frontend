@@ -17,11 +17,10 @@ import {
 
 import { useActions } from '../hooks/action'
 import { useAppSelector } from '../hooks/redux'
-import { useCallback, useEffect, useState } from 'react'
-import axios from 'axios'
-import { IGetMe } from '../models'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ChangeNickname from './ChangeNickname'
 import { Link } from 'react-router-dom'
+import { useLazyGetMeQuery } from '../store/api'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -33,13 +32,17 @@ export default function Header() {
   const { nickname } = useAppSelector((state) => state.nickname)
   const [isChangeNicknameOpen, setIsChangeNicknameOpen] =
     useState<boolean>(false)
+  const [triggerGetMe, { data: meData, isLoading: isGettingMe }] =
+    useLazyGetMeQuery()
+  const isRun = useRef<boolean>(false)
 
   const getNickname = useCallback(async () => {
-    const response = await axios.get<IGetMe>('http://localhost:8000/api/me', {
-      withCredentials: true
-    })
-    setNickname(response.data.nickname)
-  }, [])
+    if (!isRun.current) {
+      triggerGetMe()
+      isRun.current = true
+    }
+    if (!isGettingMe && isRun && meData) setNickname(meData.nickname)
+  }, [isGettingMe])
 
   useEffect(() => {
     if (isLogin) {

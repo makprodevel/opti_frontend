@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IGetMe } from '../models'
+import { IChangeNickname, IGetMe } from '../models'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
@@ -21,14 +21,14 @@ export const mainApi = createApi({
         url: 'api/me'
       })
     }),
-    changeNickname: build.query<string, string>({
+    changeNickname: build.mutation<IChangeNickname, string>({
       query: (newNickname: string) => ({
-        url: 'api/',
+        url: 'api/me',
         method: 'PUT',
-        body: JSON.stringify({ new_nickname: newNickname })
+        body: { new_nickname: newNickname }
       })
     })
   })
 })
 
-export const { useLazyGetMeQuery, useLazyChangeNicknameQuery } = mainApi
+export const { useLazyGetMeQuery, useChangeNicknameMutation } = mainApi
