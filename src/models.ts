@@ -1,7 +1,21 @@
 export type UUID = string
 
+export interface IGetMe {
+  email: string
+  nickname: string
+}
+
 export interface IChangeNickname {
   new_nickname: string
+}
+
+export interface ISearchResult {
+  users: UserInfo[]
+}
+
+export interface UserInfo {
+  id: string
+  nickname: string
 }
 
 export interface ActionBase {
@@ -15,11 +29,6 @@ export enum ActionType {
   sendMessage = 'send_message',
   recieveMessage = 'receive_message',
   deleteChat = 'delete_chat'
-}
-
-export interface IGetMe {
-  email: string
-  nickname: string
 }
 
 export interface IReceivedMessage extends ActionBase, Message {

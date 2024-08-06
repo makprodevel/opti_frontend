@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IChangeNickname, IGetMe } from '../models'
+import { IChangeNickname, IGetMe, ISearchResult } from '../models'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
@@ -27,8 +27,21 @@ export const mainApi = createApi({
         method: 'PUT',
         body: { new_nickname: newNickname }
       })
+    }),
+    searchUser: build.query<ISearchResult, string>({
+      query: (search: string) => ({
+        url: 'api/search/user',
+        method: 'GET',
+        params: {
+          q: search
+        }
+      })
     })
   })
 })
 
-export const { useLazyGetMeQuery, useChangeNicknameMutation } = mainApi
+export const {
+  useLazyGetMeQuery,
+  useChangeNicknameMutation,
+  useLazySearchUserQuery
+} = mainApi
