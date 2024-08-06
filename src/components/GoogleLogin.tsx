@@ -1,6 +1,5 @@
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
 import { useActions } from '../hooks/action'
 
 export default function GoogleLoginButton() {

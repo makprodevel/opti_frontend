@@ -89,6 +89,11 @@ export const chatSlice = createSlice({
       }
 
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
+    },
+
+    SetUserNickname(state: ChatStore, action: PayloadAction<[UUID, string]>) {
+      const [id, nickname] = action.payload
+      state.users[id] = nickname
     }
   }
 })
