@@ -2,15 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import { mainApi } from './api'
 import { setupListeners } from '@reduxjs/toolkit/query/react'
 import { chatReducer } from './chat'
-import { loginReducer } from './login'
-import { nicknameReducer } from './nickname'
+import { userReducer } from './user'
 
 export const store = configureStore({
   reducer: {
     [mainApi.reducerPath]: mainApi.reducer,
     chat: chatReducer,
-    login: loginReducer,
-    nickname: nicknameReducer
+    user: userReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(mainApi.middleware)

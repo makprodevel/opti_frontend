@@ -11,7 +11,7 @@ interface ISearchUserProps {
 
 export default function SearchUser({ setSearchList }: ISearchUserProps) {
   const [searchText, setSearchText] = useState<string>('')
-  const delayedSearchText = useDelayed<string>(searchText, 500)
+  const delayedSearchText = useDelayed<string>(searchText, 200)
   const [
     triggerSearchUser,
     { data: searchUserData, isLoading: isSearchingUser }

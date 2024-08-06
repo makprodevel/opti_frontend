@@ -12,7 +12,7 @@ import {
 } from '@headlessui/react'
 import { IMessage } from '../../store/chat'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
-import { useWebsocketContext } from '../../hooks/websocket'
+import { useWebsocketContext } from '../../WebsocketContext'
 
 export default function Chatbox() {
   const { isWsOpen } = useWebsocketContext()

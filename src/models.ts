@@ -1,6 +1,7 @@
 export type UUID = string
 
 export interface IGetMe {
+  id: UUID
   email: string
   nickname: string
 }

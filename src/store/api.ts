@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { IChangeNickname, IGetMe, ISearchResult } from '../models'
+import { userAction } from './user'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
@@ -16,10 +17,18 @@ export const mainApi = createApi({
     fetchFn: customFetch
   }),
   endpoints: (build) => ({
-    getMe: build.query<IGetMe, void>({
+    getUserData: build.mutation<IGetMe, void>({
       query: () => ({
         url: 'api/me'
-      })
+      }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          dispatch(userAction.setUser(data))
+        } catch (err) {
+          console.error('Error get current user:', err)
+        }
+      }
     }),
     changeNickname: build.mutation<IChangeNickname, string>({
       query: (newNickname: string) => ({
@@ -41,7 +50,7 @@ export const mainApi = createApi({
 })
 
 export const {
-  useLazyGetMeQuery,
+  useGetUserDataMutation,
   useChangeNicknameMutation,
   useLazySearchUserQuery
 } = mainApi

@@ -3,10 +3,10 @@ import Chatbox from '../components/chat/Chatbox.tsx'
 import { useChatContext } from '../ChatContext.tsx'
 import { useAppSelector } from '../hooks/redux.ts'
 import GoogleLoginButton from '../components/GoogleLogin.tsx'
-import { WebSocketProvider } from '../hooks/websocket.tsx'
+import { WebSocketProvider } from '../WebsocketContext.tsx'
 
 export default function ChatPage() {
-  const { isLogin } = useAppSelector((state) => state.login)
+  const { id: isLogin } = useAppSelector((state) => state.user)
   const { currentChat } = useChatContext()
 
   return (

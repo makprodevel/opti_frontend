@@ -14,9 +14,9 @@ import {
   IGetPreview,
   IReceivedMessage,
   UUID
-} from '../models'
+} from './models'
 
-import { useActions } from './action'
+import { useActions } from './hooks/action'
 
 interface IWebsocketContext {
   getChat(chat: UUID): Promise<void>

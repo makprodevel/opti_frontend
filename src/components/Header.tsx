@@ -17,38 +17,19 @@ import {
 
 import { useActions } from '../hooks/action'
 import { useAppSelector } from '../hooks/redux'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import ChangeNickname from './ChangeNickname'
 import { Link } from 'react-router-dom'
-import { useLazyGetMeQuery } from '../store/api'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
-  const { logOut, setNickname } = useActions()
-  const { isLogin } = useAppSelector((state) => state.login)
-  const { nickname } = useAppSelector((state) => state.nickname)
+  const { logOut } = useActions()
+  const { nickname } = useAppSelector((state) => state.user)
   const [isChangeNicknameOpen, setIsChangeNicknameOpen] =
     useState<boolean>(false)
-  const [triggerGetMe, { data: meData, isLoading: isGettingMe }] =
-    useLazyGetMeQuery()
-  const isRun = useRef<boolean>(false)
-
-  const getNickname = useCallback(async () => {
-    if (!isRun.current) {
-      triggerGetMe()
-      isRun.current = true
-    }
-    if (!isGettingMe && isRun && meData) setNickname(meData.nickname)
-  }, [isGettingMe])
-
-  useEffect(() => {
-    if (isLogin) {
-      getNickname()
-    } else setNickname('anonym')
-  }, [isLogin])
 
   const navigation: any[] = [
     { name: 'Чат', href: '/', current: true },
@@ -117,7 +98,9 @@ export default function Header() {
                 <span className="sr-only">View notifications</span>
                 <BellIcon aria-hidden="true" className="h-6 w-6" />
               </button> */}
-              <span className="text-xl text-gray-400">{nickname}</span>
+              <span className="text-xl text-gray-400">
+                {nickname || 'anonym'}
+              </span>
 
               {/* Profile dropdown */}
               <Menu as="div" className="relative ml-3">

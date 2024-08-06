@@ -1,10 +1,10 @@
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
-import { useActions } from '../hooks/action'
+import { useGetUserDataMutation } from '../store/api'
 
 export default function GoogleLoginButton() {
   const client_key = import.meta.env.VITE_client_id
-  const { logIn } = useActions()
+  const [triggerGetUserData] = useGetUserDataMutation()
 
   return (
     <GoogleOAuthProvider clientId={client_key}>
@@ -15,7 +15,7 @@ export default function GoogleLoginButton() {
               headers: { Authorization: `Bearer ${credential}` },
               withCredentials: true
             })
-            logIn()
+            triggerGetUserData()
           }}
         />
       </div>
