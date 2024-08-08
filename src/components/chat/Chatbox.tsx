@@ -10,59 +10,69 @@ import {
   MenuItem,
   MenuItems
 } from '@headlessui/react'
-import { IMessage } from '../../store/chat'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import { useWebsocketContext } from '../../WebsocketContext'
+import { Message as MessageType } from '../../models'
 
 export default function Chatbox() {
   const { isWsOpen } = useWebsocketContext()
   const { currentChat, setCurrentChat } = useChatContext()
-  const { chats, users } = useAppSelector((state) => state.chat)
-  const [message, setMessage] = useState<string>('')
+  const { messages, users } = useAppSelector((state) => state.chat)
+  const { id: meId } = useAppSelector((state) => state.user)
+  const [messageText, setMessageText] = useState<string>('')
   const { getChat, sendMessage, deleteChat } = useWebsocketContext()
-
-  const endOfMessagesRef = useRef<HTMLDivElement>(null)
-  const inputMessageRef = useRef<HTMLInputElement>(null)
-
-  const message_list: IMessage[] =
-    useMemo(() => {
-      if (currentChat) return chats[currentChat]
-    }, [currentChat, chats]) || []
-
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [chats])
-
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView()
-  }, [currentChat])
 
   useEffect(() => {
     if (currentChat && isWsOpen) getChat(currentChat)
   }, [isWsOpen, currentChat])
 
+  const chatTile = useMemo(() => {
+    if (currentChat) {
+      const currentUser = users.filter((user) => user.id == currentChat)
+      if (currentUser.length) return currentUser[0].nickname
+    }
+    return ''
+  }, [currentChat])
+
+  const messageList: MessageType[] = useMemo(() => {
+    if (currentChat) {
+      const listMessage: MessageType[] = messages.filter(
+        (msg) =>
+          (msg.sender_id == meId && msg.recipient_id == currentChat) ||
+          (msg.recipient_id == meId && msg.sender_id == currentChat)
+      )
+      return listMessage
+    }
+    return []
+  }, [currentChat, messages])
+
   async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault()
-    if (message.trim() && currentChat && isWsOpen) {
-      await sendMessage(currentChat, message.trim())
-      setMessage('')
+    if (messageText.trim() && currentChat && isWsOpen) {
+      await sendMessage(currentChat, messageText.trim())
+      setMessageText('')
       inputMessageRef.current?.focus()
     }
   }
 
   async function deleteThisChat() {
-    if (currentChat && isWsOpen) {
-      await deleteChat(currentChat)
-    }
-    setCurrentChat('')
+    if (currentChat && isWsOpen) await deleteChat(currentChat)
+    setCurrentChat(null)
   }
+
+  const endOfMessagesRef = useRef<HTMLDivElement>(null)
+  const inputMessageRef = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messageList])
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView()
+  }, [currentChat])
 
   return (
     <div className="flex h-full w-full flex-col bg-gray-200">
       <div className="flex h-16 items-center justify-between bg-gray-800 px-6 text-gray-100">
-        <div className="text-bold text-lg">
-          {currentChat && users[currentChat]}
-        </div>
+        <div className="text-bold text-lg">{chatTile}</div>
         <Menu as="div" className="relative ml-3">
           <div>
             <MenuButton>
@@ -88,7 +98,7 @@ export default function Chatbox() {
         </Menu>
       </div>
       <div className="mb-4 flex h-4 flex-grow flex-col gap-4 overflow-y-auto scroll-auto py-4">
-        {message_list.map((msg: IMessage) => (
+        {messageList.map((msg: MessageType) => (
           <Message key={msg.id} {...msg} />
         ))}
         <div ref={endOfMessagesRef} />
@@ -103,10 +113,10 @@ export default function Chatbox() {
           type="text"
           className="mr-4 w-full max-w-lg rounded-lg border border-gray-300 px-4 py-2"
           placeholder="Пиши"
-          value={message}
+          value={messageText}
           ref={inputMessageRef}
           onChange={(event) => {
-            setMessage(event.target.value)
+            setMessageText(event.target.value)
           }}
           autoFocus
         />

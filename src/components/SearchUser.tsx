@@ -3,10 +3,10 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { useLazySearchUserQuery } from '../store/api'
 import { useEffect, useState } from 'react'
 import { useDelayed } from '../hooks/delayed'
-import { UserInfo } from '../models'
+import { User } from '../models'
 
 interface ISearchUserProps {
-  setSearchList: React.Dispatch<React.SetStateAction<UserInfo[]>>
+  setSearchList: React.Dispatch<React.SetStateAction<User[]>>
 }
 
 export default function SearchUser({ setSearchList }: ISearchUserProps) {

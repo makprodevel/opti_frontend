@@ -9,10 +9,10 @@ import {
 
 import {
   ActionBase,
-  ActionType,
-  IGetChat,
-  IGetPreview,
-  IReceivedMessage,
+  ClientActionType,
+  IChatsPreview,
+  IReceiveMessages,
+  ServerActionType,
   UUID
 } from './models'
 
@@ -40,11 +40,11 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   const ws = useRef<WebSocket | null>(null)
   const [isWsOpen, setIsWsOpen] = useState<boolean>(false)
 
-  const { GetPreview, AddChat, RecieveMessage } = useActions()
+  const { GetPreview, RecieveMessages } = useActions()
   const isRun = useRef<boolean>(false)
 
   const wsSend = async (
-    action_type: ActionType,
+    action_type: ServerActionType,
     data?: { [key: string]: any }
   ) => {
     if (ws.current?.readyState == WebSocket.OPEN) {
@@ -62,15 +62,12 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     ws.current = ws_
     ws_.onmessage = (e) => {
       const data: ActionBase = JSON.parse(JSON.parse(e.data))
-      switch (data.action_type) {
-        case ActionType.getPreview:
-          GetPreview(data as IGetPreview)
+      switch (data.action_type as ClientActionType) {
+        case ClientActionType.getPreview:
+          GetPreview(data as IChatsPreview)
           break
-        case ActionType.getChat:
-          AddChat(data as IGetChat)
-          break
-        case ActionType.recieveMessage:
-          RecieveMessage(data as IReceivedMessage)
+        case ClientActionType.receiveMessages:
+          RecieveMessages(data as IReceiveMessages)
           break
         default:
           console.error('unhandled data: ', data)
@@ -100,21 +97,21 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   async function getChat(chat: UUID) {
-    await wsSend(ActionType.getChat, {
-      recipient_id: chat
+    await wsSend(ServerActionType.getChat, {
+      user_id: chat
     })
   }
 
   async function sendMessage(chat: UUID, message: string) {
-    await wsSend(ActionType.sendMessage, {
+    await wsSend(ServerActionType.sendMessage, {
       recipient_id: chat,
       message
     })
   }
 
   async function deleteChat(chat: UUID) {
-    await wsSend(ActionType.deleteChat, {
-      id: chat
+    await wsSend(ServerActionType.deleteChat, {
+      user_id: chat
     })
   }
 

@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
-import { IMessage } from '../../store/chat'
 import { formatDate } from '../../utils'
+import { useAppSelector } from '../../hooks/redux'
+import { Message as MessageType } from '../../models'
 
-export default function Message(msg: IMessage) {
+export default function Message(msg: MessageType) {
+  const { id: userId } = useAppSelector((state) => state.user)
   const [time, own] = useMemo(() => {
     const formattedDate = formatDate(msg.time)
-    return [formattedDate, msg.owning]
+    return [formattedDate, msg.sender_id == userId]
   }, [msg])
 
   return (
