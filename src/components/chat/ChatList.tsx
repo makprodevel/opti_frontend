@@ -31,7 +31,7 @@ export default function ChatList() {
               return new Date(b.time).getTime() - new Date(a.time).getTime()
             })[0]
           } as IChatPreview)
-        } else result.push({ user } as IChatPreview)
+        } else if (searchList) result.push({ user } as IChatPreview)
       })
       result.sort((p1, p2) => {
         if (p1.message && p2.message) {
