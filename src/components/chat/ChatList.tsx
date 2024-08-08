@@ -3,17 +3,22 @@ import { useAppSelector } from '../../hooks/redux'
 import ChatRow from './ChatRow'
 import SearchUser from '../SearchUser'
 import { useMemo, useState } from 'react'
-import { User, IChatPreview } from '../../models'
+import { Message, User } from '../../models'
+
+export interface IChatPreview {
+  user: User
+  message?: Message
+}
 
 export default function ChatList() {
   const { messages, users } = useAppSelector((state) => state.chat)
-  const [searchList, setSearchList] = useState<User[]>([])
+  const [searchList, setSearchList] = useState<User[] | null>(null)
   const { id: currentUserId } = useAppSelector((state) => state.user)
 
   const listChat: IChatPreview[] =
     useMemo(() => {
       const result: IChatPreview[] = []
-      users.forEach((user) => {
+      ;(searchList ?? users).forEach((user) => {
         const msgList = messages.filter((msg) => {
           if (user.id != currentUserId)
             return msg.sender_id == user.id || msg.recipient_id == user.id
@@ -22,49 +27,39 @@ export default function ChatList() {
         if (msgList.length) {
           result.push({
             user,
-            last_message: msgList.sort((a, b) => {
+            message: msgList.sort((a, b) => {
               return new Date(b.time).getTime() - new Date(a.time).getTime()
             })[0]
           } as IChatPreview)
-        }
+        } else result.push({ user } as IChatPreview)
       })
       result.sort((p1, p2) => {
-        if (p1.last_message.is_viewed !== p2.last_message.is_viewed) {
+        if (p1.message && p2.message) {
+          if (p1.message.is_viewed !== p2.message.is_viewed) {
+            return Number(p1.message.is_viewed) - Number(p2.message.is_viewed)
+          }
           return (
-            Number(p1.last_message.is_viewed) -
-            Number(p2.last_message.is_viewed)
+            new Date(p2.message.time).getTime() -
+            new Date(p1.message.time).getTime()
           )
+        } else {
+          return 0
         }
-        console.error(
-          'this',
-          p1.user.id,
-          p2.user.id,
-          new Date(p1.last_message.time).getTime(),
-          new Date(p2.last_message.time).getTime(),
-          new Date(p2.last_message.time).getTime() -
-            new Date(p1.last_message.time).getTime()
-        )
-        return (
-          new Date(p2.last_message.time).getTime() -
-          new Date(p1.last_message.time).getTime()
-        )
       })
       return result
-    }, [messages]) || []
+    }, [messages, searchList]) || []
 
   return (
     <div className="relative flex h-full w-60 min-w-60 max-w-60 flex-col">
       <SearchUser setSearchList={setSearchList} />
       <RadioGroup className="h-full w-full divide-y divide-gray-100 bg-gray-200">
-        {searchList.length
-          ? searchList.map((user) => <ChatRow key={user.id} user={user} />)
-          : listChat.map((chatRow) => (
-              <ChatRow
-                key={chatRow.user.id}
-                user={chatRow.user}
-                message={chatRow.last_message}
-              />
-            ))}
+        {listChat.length ? (
+          listChat.map((chatRow) => (
+            <ChatRow key={chatRow.user.id} {...chatRow} />
+          ))
+        ) : (
+          <p className="p-3 text-gray-600">Ничего не найдено</p>
+        )}
       </RadioGroup>
     </div>
   )

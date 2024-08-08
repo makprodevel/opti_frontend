@@ -6,7 +6,7 @@ import { useDelayed } from '../hooks/delayed'
 import { User } from '../models'
 
 interface ISearchUserProps {
-  setSearchList: React.Dispatch<React.SetStateAction<User[]>>
+  setSearchList: React.Dispatch<React.SetStateAction<User[] | null>>
 }
 
 export default function SearchUser({ setSearchList }: ISearchUserProps) {
@@ -19,11 +19,12 @@ export default function SearchUser({ setSearchList }: ISearchUserProps) {
 
   useEffect(() => {
     if (delayedSearchText.trim()) triggerSearchUser(delayedSearchText.trim())
-    else setSearchList([])
+    else setSearchList(null)
   }, [delayedSearchText])
 
   useEffect(() => {
     if (searchUserData && !isSearchingUser) setSearchList(searchUserData.users)
+    else setSearchList(null)
   }, [searchUserData, isSearchingUser])
 
   return (

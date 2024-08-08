@@ -42,7 +42,7 @@ export default function ChatRow({ user, message }: IChatRowProps) {
       {message && (
         <div className="flex w-full justify-between gap-x-1">
           <div className="truncate">{message.text}</div>
-          {!message.is_viewed && (
+          {user.count_unread_message && (
             <div className="flex-0 flex items-center justify-center rounded-full bg-blue-500 px-2 py-[0.2rem] text-xs text-gray-200">
               {user.count_unread_message}
             </div>
