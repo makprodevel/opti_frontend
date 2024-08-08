@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useChatContext } from '../../ChatContext'
 import Message from './Message'
 import { useAppSelector } from '../../hooks/redux'
 import {
@@ -13,51 +12,53 @@ import {
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import { useWebsocketContext } from '../../WebsocketContext'
 import { Message as MessageType } from '../../models'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function Chatbox() {
+  const { otherUserId } = useParams()
+  const navigate = useNavigate()
   const { isWsOpen } = useWebsocketContext()
-  const { currentChat, setCurrentChat } = useChatContext()
   const { messages, users } = useAppSelector((state) => state.chat)
   const { id: meId } = useAppSelector((state) => state.user)
   const [messageText, setMessageText] = useState<string>('')
   const { getChat, sendMessage, deleteChat } = useWebsocketContext()
 
   useEffect(() => {
-    if (currentChat && isWsOpen) getChat(currentChat)
-  }, [isWsOpen, currentChat])
+    if (otherUserId && isWsOpen) getChat(otherUserId)
+  }, [isWsOpen, otherUserId])
 
   const chatTile = useMemo(() => {
-    if (currentChat) {
-      const currentUser = users.filter((user) => user.id == currentChat)
+    if (otherUserId) {
+      const currentUser = users.filter((user) => user.id == otherUserId)
       if (currentUser.length) return currentUser[0].nickname
     }
     return ''
-  }, [currentChat])
+  }, [otherUserId])
 
   const messageList: MessageType[] = useMemo(() => {
-    if (currentChat) {
+    if (otherUserId) {
       const listMessage: MessageType[] = messages.filter(
         (msg) =>
-          (msg.sender_id == meId && msg.recipient_id == currentChat) ||
-          (msg.recipient_id == meId && msg.sender_id == currentChat)
+          (msg.sender_id == meId && msg.recipient_id == otherUserId) ||
+          (msg.recipient_id == meId && msg.sender_id == otherUserId)
       )
       return listMessage
     }
     return []
-  }, [currentChat, messages])
+  }, [otherUserId, messages])
 
   async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
     event?.preventDefault()
-    if (messageText.trim() && currentChat && isWsOpen) {
-      await sendMessage(currentChat, messageText.trim())
+    if (messageText.trim() && otherUserId && isWsOpen) {
+      await sendMessage(otherUserId, messageText.trim())
       setMessageText('')
       inputMessageRef.current?.focus()
     }
   }
 
   async function deleteThisChat() {
-    if (currentChat && isWsOpen) await deleteChat(currentChat)
-    setCurrentChat(null)
+    if (otherUserId && isWsOpen) await deleteChat(otherUserId)
+    navigate('/chat')
   }
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
@@ -67,7 +68,7 @@ export default function Chatbox() {
   }, [messageList])
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView()
-  }, [currentChat])
+  }, [otherUserId])
 
   return (
     <div className="flex h-full w-full flex-col bg-gray-200">

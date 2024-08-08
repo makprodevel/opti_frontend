@@ -32,7 +32,7 @@ export default function Header() {
     useState<boolean>(false)
 
   const navigation: any[] = [
-    { name: 'Чат', href: '/', current: true },
+    { name: 'Чат', href: '/chat', current: true },
     { name: 'О нас', href: '/about', current: true }
   ]
   const userNavigation: {

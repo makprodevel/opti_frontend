@@ -1,8 +1,8 @@
 import { Radio } from '@headlessui/react'
 import { Message, User } from '../../models'
-import { useChatContext } from '../../ChatContext'
 import { formatDate } from '../../utils'
 import { useActions } from '../../hooks/action'
+import { useNavigate } from 'react-router-dom'
 
 export interface IChatRowProps {
   user: User
@@ -11,10 +11,10 @@ export interface IChatRowProps {
 
 export default function ChatRow({ user, message }: IChatRowProps) {
   const { AddUser } = useActions()
-  const { setCurrentChat } = useChatContext()
+  const navigate = useNavigate()
   const switchChatOnClick = () => {
     AddUser(user)
-    setCurrentChat(user.id)
+    navigate(`/chat/${user.id}`)
   }
 
   return (
