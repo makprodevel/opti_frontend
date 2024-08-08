@@ -1,6 +1,6 @@
 import { Input } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { useLazySearchUserQuery } from '../store/api'
+import { useLazySearchUserQuery } from '../store/mainApi'
 import { useEffect, useState } from 'react'
 import { useDelayed } from '../hooks/delayed'
 import { User } from '../models'

@@ -1,6 +1,6 @@
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import axios from 'axios'
-import { useGetUserDataMutation } from '../store/api'
+import { useGetUserDataMutation } from '../store/mainApi'
 
 export default function GoogleLoginButton() {
   const client_key = import.meta.env.VITE_client_id

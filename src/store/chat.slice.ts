@@ -26,14 +26,14 @@ export const chatSlice = createSlice({
         state.messages.push(chatPreview.last_message)
       })
 
-      // localStorage.setItem(LS_CHAT, JSON.stringify(state))
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
     },
 
     AddUser(state: ChatStore, action: PayloadAction<User>) {
       state.users = state.users.filter((user) => user.id != action.payload.id)
       state.users.push(action.payload)
 
-      // localStorage.setItem(LS_CHAT, JSON.stringify(state))
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
     },
 
     RecieveMessages(state: ChatStore, action: PayloadAction<IReceiveMessages>) {
@@ -45,7 +45,7 @@ export const chatSlice = createSlice({
       )
       state.messages.push(...action.payload.messages)
 
-      // localStorage.setItem(LS_CHAT, JSON.stringify(state))
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
     }
   }
 })

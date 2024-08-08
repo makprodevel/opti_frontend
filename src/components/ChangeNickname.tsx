@@ -2,7 +2,7 @@ import { Button, Field, Input } from '@headlessui/react'
 import Modal from './Modal'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useActions } from '../hooks/action'
-import { useChangeNicknameMutation } from '../store/api'
+import { useChangeNicknameMutation } from '../store/mainApi'
 
 interface ChangeNicknameProps {
   isOpen: boolean

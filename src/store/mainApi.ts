@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { IChangeNickname, IGetMe, ISearchResult } from '../models'
-import { userAction } from './user'
+import { userAction } from './user.slice'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
