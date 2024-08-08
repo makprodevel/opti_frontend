@@ -27,9 +27,16 @@ export default function SearchUser({ setSearchList }: ISearchUserProps) {
     else setSearchList(null)
   }, [searchUserData, isSearchingUser])
 
+  const formHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+  }
+
   return (
     <>
-      <form className="relative h-16 w-full bg-gray-200 p-3">
+      <form
+        onSubmit={formHandler}
+        className="relative h-16 w-full bg-gray-200 p-3"
+      >
         <div className="relative flex h-full w-full gap-x-2 border-b-2 border-gray-400">
           <MagnifyingGlassIcon className="w-6 flex-grow-0 text-gray-600" />
           <Input
