@@ -1,5 +1,15 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { Message, User, IChatsPreview, IReceiveMessages, UUID } from '../models'
+import {
+  Message,
+  User,
+  IChatsPreview,
+  IReceiveMessages,
+  UUID,
+  IReadMessagesClient,
+  IDeleteChatClient,
+  IDeleteChatActionSchema
+} from '../models'
+import { useAppSelector } from '../hooks/redux'
 
 const LS_CHAT = 'chat'
 
@@ -44,6 +54,32 @@ export const chatSlice = createSlice({
         (msg) => !newMsgListId.includes(msg.id)
       )
       state.messages.push(...action.payload.messages)
+
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
+    },
+
+    ReadMessages(state: ChatStore, action: PayloadAction<IReadMessagesClient>) {
+      state.messages = state.messages.map((msg) => {
+        if (action.payload.list_messages_id.includes(msg.id))
+          msg.is_viewed = true
+        return msg
+      })
+
+      localStorage.setItem(LS_CHAT, JSON.stringify(state))
+    },
+
+    DeleteChat(
+      state: ChatStore,
+      action: PayloadAction<IDeleteChatActionSchema>
+    ) {
+      const { otherId, currentId } = action.payload
+      state.messages = state.messages.filter(
+        (msg) =>
+          !(
+            (msg.sender_id == otherId && msg.recipient_id == currentId) ||
+            (msg.recipient_id == otherId && msg.sender_id == currentId)
+          )
+      )
 
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
     }

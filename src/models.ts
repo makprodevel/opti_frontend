@@ -1,5 +1,25 @@
 export type UUID = string
 
+export interface User {
+  id: UUID
+  nickname: string
+  count_unread_message?: number
+}
+
+export interface Message {
+  id: UUID
+  sender_id: UUID
+  recipient_id: UUID
+  text: string
+  time: string
+  is_viewed: boolean
+}
+
+export interface IChatPreview {
+  user: User
+  last_message: Message
+}
+
 export interface IGetMe {
   id: UUID
   email: string
@@ -34,58 +54,61 @@ export enum ServerActionType {
   deleteChat = 'delete_chat'
 }
 
-export interface ActionBase {
+interface ActionBase {
   action_type: ClientActionType | ServerActionType
 }
 
-export interface User {
-  id: UUID
-  nickname: string
-  count_unread_message?: number
+export interface ClientActionBase extends ActionBase {
+  action_type: ClientActionType
 }
 
-export interface Message {
-  id: UUID
-  sender_id: UUID
-  recipient_id: UUID
-  text: string
-  time: string
-  is_viewed: boolean
+export interface ServerActionBase extends ActionBase {
+  action_type: ServerActionType
 }
 
-export interface IChatPreview {
-  user: User
-  last_message: Message
-}
-
-export interface IChatsPreview extends ActionBase {
+export interface IChatsPreview extends ClientActionBase {
   action_type: ClientActionType.getPreview
   chat_list: IChatPreview[]
 }
 
-export interface IReceiveMessages extends ActionBase {
+export interface IReceiveMessages extends ClientActionBase {
   action_type: ClientActionType.receiveMessages
   messages: Message[]
 }
 
-export interface IReadMessages extends ActionBase {
-  action_type: ServerActionType.readMessages | ClientActionType.readMessages
+export interface IReadMessagesClient extends ClientActionBase {
+  action_type: ClientActionType.readMessages
+  list_messages_id: UUID[]
+}
+
+export interface IReadMessagesServer extends ServerActionBase {
+  action_type: ServerActionType.readMessages
   other_user_id: UUID
   list_messages_id: UUID[]
 }
 
-export interface IGetChat extends ActionBase {
+export interface IGetChat extends ServerActionBase {
   action_type: ServerActionType.getChat
-  user_id: string
+  user_id: UUID
 }
 
-export interface ISendMessage extends ActionBase {
+export interface ISendMessage extends ServerActionBase {
   action_type: ServerActionType.sendMessage
-  recipient_id: string
+  recipient_id: UUID
   message: string
 }
 
-export interface IDeleteChat extends ActionBase {
+export interface IDeleteChat extends ServerActionBase {
   action_type: ServerActionType.deleteChat
-  user_id: string
+  user_id: UUID
+}
+
+export interface IDeleteChatClient extends ClientActionBase {
+  action_type: ClientActionType.deleteChat
+  other_user_id: UUID
+}
+
+export interface IDeleteChatActionSchema {
+  currentId: UUID
+  otherId: UUID
 }

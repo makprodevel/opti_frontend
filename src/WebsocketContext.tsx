@@ -8,28 +8,38 @@ import {
 } from 'react'
 
 import {
-  ActionBase,
+  ClientActionBase,
   ClientActionType,
   IChatsPreview,
+  IDeleteChat,
+  IDeleteChatClient,
+  IGetChat,
+  IReadMessagesClient,
+  IReadMessagesServer,
   IReceiveMessages,
+  ISendMessage,
+  ServerActionBase,
   ServerActionType,
   UUID
 } from './models'
 
 import { useActions } from './hooks/action'
+import { useAppSelector } from './hooks/redux'
 
 interface IWebsocketContext {
+  isWsOpen: boolean
   getChat(chat: UUID): Promise<void>
   sendMessage(chat: UUID, message: string): Promise<void>
   deleteChat(chat: UUID): Promise<void>
-  isWsOpen: boolean
+  readMessages: (chat: UUID, listMsgId: UUID[]) => Promise<void>
 }
 
 const WebsocketContext = createContext<IWebsocketContext>({
+  isWsOpen: false,
   getChat: async () => {},
   sendMessage: async () => {},
   deleteChat: async () => {},
-  isWsOpen: false
+  readMessages: async () => {}
 })
 
 export const useWebsocketContext = () => {
@@ -39,18 +49,19 @@ export const useWebsocketContext = () => {
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   const ws = useRef<WebSocket | null>(null)
   const [isWsOpen, setIsWsOpen] = useState<boolean>(false)
+  const { id: userId } = useAppSelector((state) => state.user)
 
-  const { GetPreview, RecieveMessages } = useActions()
+  const { GetPreview, RecieveMessages, ReadMessages, DeleteChat } = useActions()
   const isRun = useRef<boolean>(false)
 
-  const wsSend = async (
-    action_type: ServerActionType,
-    data?: { [key: string]: any }
-  ) => {
+  const DeleteChatHandler = (data: IDeleteChatClient) => {
+    DeleteChat({ currentId: userId || '', otherId: data.other_user_id })
+  }
+
+  const wsSend = async (data: ServerActionBase) => {
     if (ws.current?.readyState == WebSocket.OPEN) {
-      await ws.current?.send(
+      await ws.current.send(
         JSON.stringify({
-          action_type,
           ...data
         })
       )
@@ -58,10 +69,10 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }
 
   function OpenWebsocket() {
-    const ws_ = new WebSocket('ws://localhost:8000/chat/ws')
-    ws.current = ws_
-    ws_.onmessage = (e) => {
-      const data: ActionBase = JSON.parse(JSON.parse(e.data))
+    const newWs = new WebSocket('ws://localhost:8000/chat/ws')
+    ws.current = newWs
+    newWs.onmessage = (e) => {
+      const data: ClientActionBase = JSON.parse(JSON.parse(e.data))
       switch (data.action_type as ClientActionType) {
         case ClientActionType.getPreview:
           GetPreview(data as IChatsPreview)
@@ -69,20 +80,26 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
         case ClientActionType.receiveMessages:
           RecieveMessages(data as IReceiveMessages)
           break
+        case ClientActionType.readMessages:
+          ReadMessages(data as IReadMessagesClient)
+          break
+        case ClientActionType.deleteChat:
+          DeleteChatHandler(data as IDeleteChatClient)
+          break
         default:
           console.error('unhandled data: ', data)
       }
     }
-    ws_.onopen = () => {
+    newWs.onopen = () => {
       setIsWsOpen(true)
     }
-    ws_.onclose = () => {
+    newWs.onclose = () => {
       setIsWsOpen(false)
       if (isRun.current) OpenWebsocket()
     }
-    ws_.onerror = (err) => {
-      console.error('WebSocket encountered error: ', err, 'Closing socket')
-      ws_.close()
+    newWs.onerror = (err) => {
+      console.error('WebSocket  error: ', err)
+      newWs.close()
     }
   }
 
@@ -97,27 +114,38 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   async function getChat(chat: UUID) {
-    await wsSend(ServerActionType.getChat, {
+    await wsSend({
+      action_type: ServerActionType.getChat,
       user_id: chat
-    })
+    } as IGetChat)
   }
 
   async function sendMessage(chat: UUID, message: string) {
-    await wsSend(ServerActionType.sendMessage, {
+    await wsSend({
+      action_type: ServerActionType.sendMessage,
       recipient_id: chat,
       message
-    })
+    } as ISendMessage)
   }
 
   async function deleteChat(chat: UUID) {
-    await wsSend(ServerActionType.deleteChat, {
+    await wsSend({
+      action_type: ServerActionType.deleteChat,
       user_id: chat
-    })
+    } as IDeleteChat)
+  }
+
+  async function readMessages(chat: UUID, listMsgId: UUID[]) {
+    await wsSend({
+      action_type: ServerActionType.readMessages,
+      other_user_id: chat,
+      list_messages_id: listMsgId
+    } as IReadMessagesServer)
   }
 
   return (
     <WebsocketContext.Provider
-      value={{ getChat, sendMessage, deleteChat, isWsOpen }}
+      value={{ isWsOpen, getChat, sendMessage, deleteChat, readMessages }}
     >
       {children}
     </WebsocketContext.Provider>

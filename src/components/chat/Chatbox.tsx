@@ -63,12 +63,13 @@ export default function Chatbox() {
 
   const endOfMessagesRef = useRef<HTMLDivElement>(null)
   const inputMessageRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messageList])
-  useEffect(() => {
-    endOfMessagesRef.current?.scrollIntoView()
-  }, [otherUserId])
+  const messageContainerRef = useRef<HTMLDivElement>(null)
+  // useEffect(() => {
+  //   endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' })
+  // }, [messageList])
+  // useEffect(() => {
+  //   endOfMessagesRef.current?.scrollIntoView()
+  // }, [otherUserId])
 
   return (
     <div className="flex h-full w-full flex-col bg-gray-200">
@@ -98,9 +99,12 @@ export default function Chatbox() {
           </MenuItems>
         </Menu>
       </div>
-      <div className="mb-4 flex h-4 flex-grow flex-col gap-4 overflow-y-auto scroll-auto py-4">
+      <div
+        className="mb-4 flex h-4 flex-grow flex-col gap-4 overflow-y-auto scroll-auto py-4"
+        ref={messageContainerRef}
+      >
         {messageList.map((msg: MessageType) => (
-          <Message key={msg.id} {...msg} />
+          <Message key={msg.id} msg={msg} container={messageContainerRef} />
         ))}
         <div ref={endOfMessagesRef} />
       </div>
