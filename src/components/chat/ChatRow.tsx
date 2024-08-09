@@ -23,10 +23,7 @@ export default function ChatRow({ user, message }: IChatRowProps) {
 
   const countUnreadMessage = useMemo(() => {
     return messages.filter(
-      (msg) =>
-        msg.sender_id == user.id &&
-        msg.recipient_id == myId &&
-        msg.is_viewed == false
+      (msg) => msg.recipient_id == myId && msg.is_viewed == false
     ).length
   }, [messages])
 

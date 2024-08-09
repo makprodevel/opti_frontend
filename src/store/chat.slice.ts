@@ -6,10 +6,8 @@ import {
   IReceiveMessages,
   UUID,
   IReadMessagesClient,
-  IDeleteChatClient,
   IDeleteChatActionSchema
 } from '../models'
-import { useAppSelector } from '../hooks/redux'
 
 const LS_CHAT = 'chat'
 
