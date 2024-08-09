@@ -18,6 +18,7 @@ export interface Message {
 export interface IChatPreview {
   user: User
   last_message: Message
+  count_unread_message: number
 }
 
 export interface IGetMe {

@@ -43,7 +43,7 @@ export default function ChatList() {
             new Date(p1.message.time).getTime()
           )
         } else {
-          return 0
+          return p2.user.id.localeCompare(p1.user.id)
         }
       })
       return result

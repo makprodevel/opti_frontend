@@ -73,6 +73,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
     ws.current = newWs
     newWs.onmessage = (e) => {
       const data: ClientActionBase = JSON.parse(JSON.parse(e.data))
+      console.log(data)
       switch (data.action_type as ClientActionType) {
         case ClientActionType.getPreview:
           GetPreview(data as IChatsPreview)

@@ -3,6 +3,8 @@ import { Message, User } from '../../models'
 import { formatDate } from '../../utils'
 import { useActions } from '../../hooks/action'
 import { useNavigate } from 'react-router-dom'
+import { useMemo } from 'react'
+import { useAppSelector } from '../../hooks/redux'
 
 export interface IChatRowProps {
   user: User
@@ -11,11 +13,22 @@ export interface IChatRowProps {
 
 export default function ChatRow({ user, message }: IChatRowProps) {
   const { AddUser } = useActions()
+  const { messages } = useAppSelector((state) => state.chat)
+  const { id: myId } = useAppSelector((state) => state.user)
   const navigate = useNavigate()
   const switchChatOnClick = () => {
     AddUser(user)
     navigate(`/chat/${user.id}`)
   }
+
+  const countUnreadMessage = useMemo(() => {
+    return messages.filter(
+      (msg) =>
+        msg.sender_id == user.id &&
+        msg.recipient_id == myId &&
+        msg.is_viewed == false
+    ).length
+  }, [messages])
 
   return (
     <Radio
@@ -44,7 +57,7 @@ export default function ChatRow({ user, message }: IChatRowProps) {
           <div className="truncate">{message.text}</div>
           {user.count_unread_message && (
             <div className="flex-0 flex items-center justify-center rounded-full bg-blue-500 px-2 py-[0.2rem] text-xs text-gray-200">
-              {user.count_unread_message}
+              {user.count_unread_message ?? countUnreadMessage}
             </div>
           )}
         </div>

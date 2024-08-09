@@ -4,14 +4,21 @@ import { useAppSelector } from '../hooks/redux.ts'
 import GoogleLoginButton from '../components/GoogleLogin.tsx'
 import { WebSocketProvider } from '../WebsocketContext.tsx'
 import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useActions } from '../hooks/action.ts'
 
 export default function ChatPage() {
-  const { id: isLogin } = useAppSelector((state) => state.user)
+  const { id: myId } = useAppSelector((state) => state.user)
   const { otherUserId } = useParams()
+
+  const { DeletePreviewMark } = useActions()
+  useEffect(() => {
+    if (otherUserId) DeletePreviewMark(otherUserId)
+  }, [otherUserId])
 
   return (
     <>
-      {isLogin ? (
+      {myId ? (
         <WebSocketProvider>
           <main className="flex-1">
             <div className="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

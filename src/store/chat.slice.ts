@@ -32,7 +32,10 @@ export const chatSlice = createSlice({
       state.users = []
       state.messages = []
       action.payload.chat_list.forEach((chatPreview) => {
-        state.users.push(chatPreview.user)
+        const user = chatPreview.user
+        if (chatPreview.count_unread_message)
+          user.count_unread_message = chatPreview.count_unread_message
+        state.users.push(user)
         state.messages.push(chatPreview.last_message)
       })
 
@@ -82,6 +85,15 @@ export const chatSlice = createSlice({
       )
 
       localStorage.setItem(LS_CHAT, JSON.stringify(state))
+    },
+
+    DeletePreviewMark(state: ChatStore, action: PayloadAction<UUID>) {
+      const user = state.users.find((user) => user.id == action.payload)
+      if (user) {
+        state.users = state.users.filter((user_) => user_.id != user.id)
+        user.count_unread_message = undefined
+        state.users.push(user)
+      }
     }
   }
 })
