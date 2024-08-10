@@ -6,10 +6,11 @@ import { WebSocketProvider } from '../WebsocketContext.tsx'
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useActions } from '../hooks/action.ts'
+import { ChatPageParams } from '../models.ts'
 
 export default function ChatPage() {
   const { id: myId } = useAppSelector((state) => state.user)
-  const { otherUserId } = useParams()
+  const { otherUserId } = useParams<ChatPageParams>()
 
   const { DeletePreviewMark } = useActions()
   useEffect(() => {

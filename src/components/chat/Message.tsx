@@ -1,18 +1,22 @@
 import { useEffect, useMemo } from 'react'
 import { formatDate } from '../../utils'
 import { useAppSelector } from '../../hooks/redux'
-import { Message as MessageType } from '../../models'
+import { Message as MessageType, UUID } from '../../models'
 import { CheckIcon } from '@heroicons/react/16/solid'
 import useElementInViewport from '../../hooks/visible'
 import { useWebsocketContext } from '../../WebsocketContext'
-import { useParams } from 'react-router-dom'
 
 interface IMessageProps {
   msg: MessageType
   container: React.RefObject<HTMLDivElement>
+  otherUserId: UUID
 }
 
-export default function Message({ msg, container }: IMessageProps) {
+export default function Message({
+  msg,
+  container,
+  otherUserId
+}: IMessageProps) {
   const { readMessages } = useWebsocketContext()
   const { id: userId } = useAppSelector((state) => state.user)
   const [isVisible, elementRef] = useElementInViewport(container)
@@ -20,7 +24,6 @@ export default function Message({ msg, container }: IMessageProps) {
     const formattedDate = formatDate(msg.time)
     return [formattedDate, msg.sender_id == userId]
   }, [msg])
-  const { otherUserId } = useParams()
 
   useEffect(() => {
     if (isVisible && !msg.is_viewed) readMessages(otherUserId || '', [msg.id])

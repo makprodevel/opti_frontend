@@ -1,27 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import Message from './Message'
 import { useAppSelector } from '../../hooks/redux'
-import {
-  Button,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems
-} from '@headlessui/react'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import { useWebsocketContext } from '../../WebsocketContext'
-import { Message as MessageType } from '../../models'
+import { ChatPageParams, Message as MessageType } from '../../models'
 import { useNavigate, useParams } from 'react-router-dom'
+import { MessageInput } from './MessageInput'
 
 export default function Chatbox() {
-  const { otherUserId } = useParams()
+  const { otherUserId } = useParams<ChatPageParams>()
   const navigate = useNavigate()
   const { isWsOpen } = useWebsocketContext()
   const { messages, users } = useAppSelector((state) => state.chat)
   const { id: meId } = useAppSelector((state) => state.user)
-  const [messageText, setMessageText] = useState<string>('')
-  const { getChat, sendMessage, deleteChat } = useWebsocketContext()
+  const { getChat, deleteChat } = useWebsocketContext()
 
   useEffect(() => {
     if (otherUserId && isWsOpen) getChat(otherUserId)
@@ -46,15 +39,6 @@ export default function Chatbox() {
     }
     return []
   }, [otherUserId, messages])
-
-  async function sendMessageHandler(event?: React.FormEvent<HTMLFormElement>) {
-    event?.preventDefault()
-    if (messageText.trim() && otherUserId && isWsOpen) {
-      await sendMessage(otherUserId, messageText.trim())
-      setMessageText('')
-      inputMessageRef.current?.focus()
-    }
-  }
 
   async function deleteThisChat() {
     if (otherUserId && isWsOpen) await deleteChat(otherUserId)
@@ -104,37 +88,19 @@ export default function Chatbox() {
         ref={messageContainerRef}
       >
         {messageList.map((msg: MessageType) => (
-          <Message key={msg.id} msg={msg} container={messageContainerRef} />
+          <Message
+            key={msg.id}
+            msg={msg}
+            container={messageContainerRef}
+            otherUserId={otherUserId ?? ''}
+          />
         ))}
         <div ref={endOfMessagesRef} />
       </div>
-      <form
-        className="flex h-16 grow-0 items-center justify-center"
-        onSubmit={(event) => {
-          sendMessageHandler(event)
-        }}
-      >
-        <Input
-          type="text"
-          className="mr-4 w-full max-w-lg rounded-lg border border-gray-300 px-4 py-2"
-          placeholder="Пиши"
-          value={messageText}
-          ref={inputMessageRef}
-          onChange={(event) => {
-            setMessageText(event.target.value)
-          }}
-          autoFocus
-        />
-        <Button
-          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-          onClick={() => {
-            sendMessageHandler()
-          }}
-          type="submit"
-        >
-          Отправить
-        </Button>
-      </form>
+      <MessageInput
+        inputRef={inputMessageRef}
+        sendingUserId={otherUserId ?? ''}
+      />
     </div>
   )
 }

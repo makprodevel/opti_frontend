@@ -1,5 +1,9 @@
 export type UUID = string
 
+export interface ChatPageParams extends Record<string, string | undefined> {
+  otherUserId?: UUID
+}
+
 export interface User {
   id: UUID
   nickname: string
