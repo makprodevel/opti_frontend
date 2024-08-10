@@ -23,7 +23,7 @@ export default function ChatPage() {
         <WebSocketProvider>
           <main className="flex-1">
             <div className="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-              <div className="flex h-full justify-between gap-x-16">
+              <div className="flex h-full justify-between gap-x-12">
                 <ListMessage />
                 {otherUserId && <Chatbox />}
               </div>

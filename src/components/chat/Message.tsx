@@ -33,7 +33,7 @@ export default function Message({
     <>
       {own ? (
         <div className="mr-4 flex justify-end">
-          <div className="max-w-[80%] rounded-lg bg-blue-500 px-3 py-1 pr-5">
+          <div className="max-w-4/5 rounded-lg bg-blue-500 px-3 py-1 pr-5">
             <p className="text-sm text-white">{msg.text}</p>
             <div className="relative flex justify-end">
               <p className="text-right text-[.6rem] text-gray-200">{time}</p>

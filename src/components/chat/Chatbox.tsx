@@ -58,7 +58,7 @@ export default function Chatbox() {
   return (
     <div className="flex h-full w-full flex-col bg-gray-200">
       <div className="flex h-16 items-center justify-between bg-gray-800 px-6 text-gray-100">
-        <div className="text-bold text-lg">{chatTile}</div>
+        <p className="text-bold max-w-80 truncate text-lg">{chatTile}</p>
         <Menu as="div" className="relative ml-3">
           <div>
             <MenuButton>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { UUID } from '../../models'
 import { useWebsocketContext } from '../../WebsocketContext'
 import { Button, Input } from '@headlessui/react'
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
 
 interface IMessageInputProps {
   inputRef: React.RefObject<HTMLInputElement>
@@ -23,14 +24,14 @@ export function MessageInput({ inputRef, sendingUserId }: IMessageInputProps) {
 
   return (
     <form
-      className="flex h-16 grow-0 items-center justify-center"
+      className="mx-4 flex h-16 grow-0 items-center justify-center"
       onSubmit={(event) => {
         sendMessageHandler(event)
       }}
     >
       <Input
         type="text"
-        className="mr-4 w-full max-w-lg rounded-lg border border-gray-300 px-4 py-2"
+        className="mr-2 w-full max-w-lg rounded-lg border border-gray-300 px-4 py-2"
         placeholder="Пиши"
         value={messageText}
         ref={inputRef}
@@ -40,13 +41,13 @@ export function MessageInput({ inputRef, sendingUserId }: IMessageInputProps) {
         autoFocus
       />
       <Button
-        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+        className="rounded-full px-2 hover:bg-gray-300"
         onClick={() => {
           sendMessageHandler()
         }}
         type="submit"
       >
-        Отправить
+        <PaperAirplaneIcon className="w-6 py-2 text-blue-600" />
       </Button>
     </form>
   )
