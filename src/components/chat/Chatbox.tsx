@@ -5,8 +5,9 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid'
 import { useWebsocketContext } from '../../WebsocketContext'
 import { ChatPageParams, Message as MessageType } from '../../models'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MessageInput } from './MessageInput'
+import { ChevronLeftIcon } from '@heroicons/react/24/outline'
 
 export default function Chatbox() {
   const { otherUserId } = useParams<ChatPageParams>()
@@ -58,6 +59,9 @@ export default function Chatbox() {
   return (
     <div className="flex h-full w-full flex-col bg-gray-200">
       <div className="flex h-16 items-center justify-between bg-gray-800 px-6 text-gray-100">
+        <Link className="md:hidden" to="/chat">
+          <ChevronLeftIcon className="w-6" />
+        </Link>
         <p className="text-bold max-w-80 truncate text-lg">{chatTile}</p>
         <Menu as="div" className="relative ml-3">
           <div>
@@ -84,7 +88,7 @@ export default function Chatbox() {
         </Menu>
       </div>
       <div
-        className="mb-4 flex h-4 flex-grow flex-col gap-4 overflow-y-auto scroll-auto py-4"
+        className="mb-4 flex h-4 grow snap-y snap-mandatory flex-col gap-4 overflow-y-auto scroll-auto py-4"
         ref={messageContainerRef}
       >
         {messageList.map((msg: MessageType) => (

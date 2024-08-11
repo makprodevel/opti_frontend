@@ -22,9 +22,17 @@ export default function ChatPage() {
       {myId ? (
         <WebSocketProvider>
           <main className="flex-1">
-            <div className="mx-auto h-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-              <div className="flex h-full justify-between gap-x-12">
-                <ListMessage />
+            <div className="mx-auto h-full md:max-w-7xl md:px-4 md:py-6">
+              <div className="flex h-full flex-col justify-between gap-x-12 md:flex-row">
+                <div className="border-t border-black md:hidden"></div>
+                {!otherUserId && (
+                  <div className="block md:hidden h-full w-full">
+                    <ListMessage />
+                  </div>
+                )}
+                <div className="hidden md:block">
+                  <ListMessage />
+                </div>
                 {otherUserId && <Chatbox />}
               </div>
             </div>

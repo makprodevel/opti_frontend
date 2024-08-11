@@ -50,7 +50,7 @@ export default function ChatList() {
     }, [messages, searchList]) || []
 
   return (
-    <div className="relative flex h-full w-60 min-w-60 max-w-60 flex-col">
+    <div className="relative flex h-full w-full flex-col md:w-60 md:min-w-60 md:max-w-60">
       <SearchUser setSearchList={setSearchList} />
       <RadioGroup className="h-full w-full divide-y divide-gray-100 bg-gray-200">
         {listChat.length ? (
