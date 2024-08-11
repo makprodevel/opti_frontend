@@ -19,20 +19,22 @@ import { useAppSelector } from '../hooks/redux'
 import { useState } from 'react'
 import ChangeNickname from './ChangeNickname'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
+  const { t } = useTranslation()
   const { logOut } = useActions()
   const { nickname } = useAppSelector((state) => state.user)
   const [isChangeNicknameOpen, setIsChangeNicknameOpen] =
     useState<boolean>(false)
 
   const navigation: any[] = [
-    { name: 'Чат', href: '/chat', current: true },
-    { name: 'О нас', href: '/about', current: true }
+    { name: t('navigation.chat'), href: '/chat', current: true },
+    { name: t('navigation.aboutUs'), href: '/about', current: true }
   ]
   const userNavigation: {
     name: string
@@ -40,12 +42,12 @@ export default function Header() {
     callBack: () => void
   }[] = [
     {
-      name: 'change nick',
+      name: t('userMenu.changeNickname'),
       href: '#',
       callBack: setIsChangeNicknameOpen.bind(null, true)
     },
     {
-      name: 'Sign out',
+      name: t('userMenu.signOut'),
       href: '#',
       callBack: () => {
         logOut()

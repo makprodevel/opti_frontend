@@ -3,6 +3,7 @@ import { UUID } from '../../models'
 import { useWebsocketContext } from '../../WebsocketContext'
 import { Button, Input } from '@headlessui/react'
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
+import { useTranslation } from 'react-i18next'
 
 interface IMessageInputProps {
   inputRef: React.RefObject<HTMLInputElement>
@@ -10,6 +11,7 @@ interface IMessageInputProps {
 }
 
 export function MessageInput({ inputRef, sendingUserId }: IMessageInputProps) {
+  const { t } = useTranslation()
   const [messageText, setMessageText] = useState<string>('')
   const { isWsOpen, sendMessage } = useWebsocketContext()
 
@@ -32,7 +34,7 @@ export function MessageInput({ inputRef, sendingUserId }: IMessageInputProps) {
       <Input
         type="text"
         className="mr-2 w-full max-w-lg rounded-lg border border-gray-300 px-4 py-2"
-        placeholder="Пиши"
+        placeholder={t('chat.inputMsg.placeholder')}
         value={messageText}
         ref={inputRef}
         onChange={(event) => {

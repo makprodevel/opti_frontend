@@ -1,4 +1,23 @@
 {
-  "welcome": "Добро пожаловать",
-  "description": "Это пример локализации."
+  "navigation": {
+    "chat": "Чат",
+    "aboutUs": "О нас"
+  },
+  "userMenu": {
+    "changeNickname": "Сменить имя",
+    "signOut": "Выйти"
+  },
+  "changeNicnameBlock": {
+    "title": "Смена имени",
+    "placeholder": "введите новое имя",
+    "buttonText": "Изменить"
+  },
+  "chat": {
+    "inputMsg": {
+      "placeholder": "Пиши"
+    },
+    "chatMenu": {
+      "deleteChat": "Удалить чат"
+    }
+  }
 }

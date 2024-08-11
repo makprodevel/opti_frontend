@@ -8,8 +8,10 @@ import { ChatPageParams, Message as MessageType } from '../../models'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { MessageInput } from './MessageInput'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
+import { useTranslation } from 'react-i18next'
 
 export default function Chatbox() {
+  const { t } = useTranslation()
   const { otherUserId } = useParams<ChatPageParams>()
   const navigate = useNavigate()
   const { isWsOpen } = useWebsocketContext()
@@ -81,7 +83,7 @@ export default function Chatbox() {
                 className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                 onClick={deleteThisChat}
               >
-                Удалить чат
+                {t('chat.chatMenu.deleteChat')}
               </a>
             </MenuItem>
           </MenuItems>

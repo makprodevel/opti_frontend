@@ -3,6 +3,7 @@ import Modal from './Modal'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useActions } from '../hooks/action'
 import { useChangeNicknameMutation } from '../store/mainApi'
+import { useTranslation } from 'react-i18next'
 
 interface ChangeNicknameProps {
   isOpen: boolean
@@ -10,6 +11,7 @@ interface ChangeNicknameProps {
 }
 
 export default function ChangeNickname(props: ChangeNicknameProps) {
+  const { t } = useTranslation()
   const [newNickname, setNewNickname] = useState<string>('')
   const { setNickname } = useActions()
   const [
@@ -31,7 +33,7 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
   }, [changeNicknameData, isChangingNickname])
 
   return (
-    <Modal title="Смена имени" {...props}>
+    <Modal title={t('changeNicnameBlock.title')} {...props}>
       <Field className="flex flex-col items-center justify-between gap-4">
         <Input
           type="text"
@@ -40,14 +42,14 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
           onChange={(event) => {
             setNewNickname(event.target.value)
           }}
-          placeholder="введите новое имя"
+          placeholder={t('changeNicnameBlock.placeholder')}
           autoFocus
         />
         <Button
           className="rounded-xl border bg-gray-200 px-6 py-3 hover:bg-gray-300"
           onClick={changeNickname}
         >
-          Изменить
+          {t('changeNicnameBlock.buttonText')}
         </Button>
       </Field>
     </Modal>

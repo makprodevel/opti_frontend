@@ -1,4 +1,23 @@
 {
-  "welcome": "Welcome",
-  "description": "This is an example of localization."
+  "navigation": {
+    "chat": "Chat",
+    "aboutUs": "About us"
+  },
+  "userMenu": {
+    "changeNickname": "Change nickname",
+    "signOut": "Sign out"
+  },
+  "changeNicnameBlock": {
+    "title": "Changing name",
+    "placeholder": "input new nickname",
+    "buttonText": "Change"
+  },
+  "chat": {
+    "inputMsg": {
+      "placeholder": "Type..."
+    },
+    "chatMenu": {
+      "deleteChat": "Delete chat"
+    }
+  }
 }
