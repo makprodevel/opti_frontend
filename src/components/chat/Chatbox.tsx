@@ -59,7 +59,7 @@ export default function Chatbox() {
   // }, [otherUserId])
 
   return (
-    <div className="flex h-full w-full flex-col bg-gray-200">
+    <div className="flex h-full w-full flex-col bg-gray-200 md:overflow-hidden md:rounded-lg">
       <div className="flex h-16 items-center justify-between bg-gray-800 px-6 text-gray-100">
         <Link className="md:hidden" to="/chat">
           <ChevronLeftIcon className="w-6" />

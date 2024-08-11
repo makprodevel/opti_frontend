@@ -30,16 +30,16 @@ export default function Modal({
       onClose={() => setIsOpen(false)}
       className="relative z-30"
     >
-      <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+      <div className="fixed inset-0 flex w-screen items-center justify-center">
         <div className="absolute inset-0 z-10 bg-black opacity-60"></div>
-        <DialogPanel className="relative z-20 max-w-lg space-y-4 rounded-xl border bg-gray-100 p-12">
+        <DialogPanel className="relative z-20 max-w-lg space-y-4 rounded-lg border bg-gray-100 px-8 py-4">
           <Button
-            className="w absolute right-4 top-4"
+            className="absolute right-4 top-4"
             onClick={() => setIsOpen(false)}
           >
-            <XMarkIcon className="w-8" />
+            <XMarkIcon className="w-7" />
           </Button>
-          <DialogTitle className="ml-auto pb-4 text-center text-lg font-bold">
+          <DialogTitle className="ml-auto text-center text-lg font-bold">
             {title}
           </DialogTitle>
           <Description>{description}</Description>

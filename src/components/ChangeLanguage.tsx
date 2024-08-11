@@ -44,7 +44,7 @@ export default function ChangeLanguage() {
             <ListboxOption
               key={option.id}
               value={option.value}
-              className="cursor-pointer px-4 py-2 hover:bg-blue-100"
+              className="cursor-pointer px-4 py-2 text-sm hover:bg-blue-100"
             >
               {option.name}
             </ListboxOption>

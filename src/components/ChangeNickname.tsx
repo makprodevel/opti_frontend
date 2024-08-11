@@ -34,10 +34,10 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
 
   return (
     <Modal title={t('changeNicnameBlock.title')} {...props}>
-      <Field className="flex flex-col items-center justify-between gap-4">
+      <Field className="flex flex-col items-center justify-between gap-4 pt-2">
         <Input
           type="text"
-          className="rounded-xl border bg-gray-200 px-2 py-1"
+          className="rounded-md border bg-gray-200 px-2 py-1"
           value={newNickname}
           onChange={(event) => {
             setNewNickname(event.target.value)
@@ -46,7 +46,7 @@ export default function ChangeNickname(props: ChangeNicknameProps) {
           autoFocus
         />
         <Button
-          className="rounded-xl border bg-gray-200 px-6 py-3 hover:bg-gray-300"
+          className="rounded-md border bg-gray-200 px-3 py-1.5 hover:bg-gray-300"
           onClick={changeNickname}
         >
           {t('changeNicnameBlock.buttonText')}
