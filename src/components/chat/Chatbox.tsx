@@ -67,10 +67,9 @@ export default function Chatbox() {
         <p className="text-bold max-w-80 truncate text-lg">{chatTile}</p>
         <Menu as="div" className="relative ml-3">
           <div>
-            <MenuButton>
+            <MenuButton className="rounded-full focus:ring-2 focus:ring-white">
               <span className="absolute -inset-1.5" />
-              <span className="sr-only">Открыть меню чата</span>
-              <EllipsisHorizontalIcon className="w-8 rounded-full text-gray-400" />
+              <EllipsisHorizontalIcon className="h-8 w-8 rounded-full text-gray-400" />
             </MenuButton>
           </div>
           <MenuItems
