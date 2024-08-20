@@ -11,7 +11,7 @@ export default function GoogleLoginButton() {
       <div className="App">
         <GoogleLogin
           onSuccess={async ({ credential }) => {
-            await axios.get('http://localhost:8000/auth/google', {
+            await axios.get('http://localhost:8000/api/auth/google', {
               headers: { Authorization: `Bearer ${credential}` },
               withCredentials: true
             })

@@ -13,13 +13,13 @@ const customFetch = async (input: RequestInfo, init?: RequestInit) => {
 export const mainApi = createApi({
   reducerPath: 'main/api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8000/',
+    baseUrl: 'http://localhost:8000/api/',
     fetchFn: customFetch
   }),
   endpoints: (build) => ({
     getUserData: build.mutation<IGetMe, void>({
       query: () => ({
-        url: 'api/me'
+        url: 'user/me'
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
@@ -32,14 +32,14 @@ export const mainApi = createApi({
     }),
     changeNickname: build.mutation<IChangeNickname, string>({
       query: (newNickname: string) => ({
-        url: 'api/me',
+        url: 'user/me',
         method: 'PUT',
         body: { new_nickname: newNickname }
       })
     }),
     searchUser: build.query<ISearchResult, string>({
       query: (search: string) => ({
-        url: 'api/search/user',
+        url: 'user/search',
         method: 'GET',
         params: {
           q: search
