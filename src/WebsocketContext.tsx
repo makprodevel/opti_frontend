@@ -25,6 +25,7 @@ import {
 
 import { useActions } from './hooks/action'
 import { useAppSelector } from './hooks/redux'
+import { HOST } from './config'
 
 interface IWebsocketContext {
   isWsOpen: boolean
@@ -55,7 +56,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   const isRun = useRef<boolean>(false)
 
   const DeleteChatHandler = (data: IDeleteChatClient) => {
-    DeleteChat({ currentId: userId || '', otherId: data.other_user_id })
+    DeleteChat({ currentId: userId as string, otherId: data.other_user_id })
   }
 
   const wsSend = async (data: ServerActionBase) => {
@@ -69,7 +70,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }
 
   function OpenWebsocket() {
-    const newWs = new WebSocket('ws://localhost:8000/api/chat/ws')
+    const newWs = new WebSocket(`ws://${HOST}/api/chat/ws`)
     ws.current = newWs
     newWs.onmessage = (e) => {
       const data: ClientActionBase = JSON.parse(JSON.parse(e.data))

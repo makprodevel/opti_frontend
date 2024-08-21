@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { IChangeNickname, IGetMe, ISearchResult } from '../models'
 import { userAction } from './user.slice'
+import { BACKEND_URL } from '../config'
 
 const customFetch = async (input: RequestInfo, init?: RequestInit) => {
   const response = await fetch(input, {
@@ -13,10 +14,19 @@ const customFetch = async (input: RequestInfo, init?: RequestInit) => {
 export const mainApi = createApi({
   reducerPath: 'main/api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8000/api/',
+    baseUrl: `${BACKEND_URL}/api/`,
     fetchFn: customFetch
   }),
   endpoints: (build) => ({
+    getCookieToken: build.query<void, string>({
+      query: (token: string) => ({
+        url: 'auth/google',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    }),
     getUserData: build.mutation<IGetMe, void>({
       query: () => ({
         url: 'user/me'
@@ -50,6 +60,7 @@ export const mainApi = createApi({
 })
 
 export const {
+  useLazyGetCookieTokenQuery,
   useGetUserDataMutation,
   useChangeNicknameMutation,
   useLazySearchUserQuery
