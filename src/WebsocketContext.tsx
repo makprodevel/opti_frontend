@@ -70,7 +70,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }
 
   function OpenWebsocket() {
-    const newWs = new WebSocket(`ws://${HOST}/api/chat/ws`)
+    const newWs = new WebSocket(`wss://${HOST}/api/chat/ws`)
     ws.current = newWs
     newWs.onmessage = (e) => {
       const data: ClientActionBase = JSON.parse(JSON.parse(e.data))
