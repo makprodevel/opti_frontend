@@ -33,15 +33,12 @@ export default function Header() {
   const [isChangeNicknameOpen, setIsChangeNicknameOpen] =
     useState<boolean>(false)
 
-  const navigation: any[] = [
+  const navigation = [
     { name: t('navigation.chat'), href: '/chat', current: true },
     { name: t('navigation.aboutUs'), href: '/about', current: true }
   ]
-  const userNavigation: {
-    name: string
-    href: string
-    callBack: () => void
-  }[] = [
+
+  const userNavigation = [
     {
       name: t('userMenu.changeNickname'),
       href: '#',
@@ -111,7 +108,7 @@ export default function Header() {
                   <MenuItem>
                     <ChangeLanguage />
                   </MenuItem>
-                  {userNavigation.map((item: any) => (
+                  {userNavigation.map((item) => (
                     <MenuItem key={item.name}>
                       <a
                         href={item.href}
