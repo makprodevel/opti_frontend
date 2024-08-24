@@ -1,5 +1,9 @@
 export type UUID = string
 
+export interface GetGoogleClientId {
+  GOOGLE_CLIENT_ID: string
+}
+
 export interface ChatPageParams extends Record<string, string | undefined> {
   otherUserId?: UUID
 }

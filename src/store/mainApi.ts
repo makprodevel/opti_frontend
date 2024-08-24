@@ -1,5 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { IChangeNickname, IGetMe, ISearchResult } from '../models'
+import {
+  GetGoogleClientId,
+  IChangeNickname,
+  IGetMe,
+  ISearchResult
+} from '../models'
 import { userAction } from './user.slice'
 import { BACKEND_URL } from '../config'
 
@@ -18,6 +23,12 @@ export const mainApi = createApi({
     fetchFn: customFetch
   }),
   endpoints: (build) => ({
+    getGoogleClientId: build.query<GetGoogleClientId, void>({
+      query: () => ({
+        url: 'auth/googleclientid',
+        method: 'GET'
+      })
+    }),
     getCookieToken: build.query<void, string>({
       query: (token: string) => ({
         url: 'auth/google',
@@ -60,6 +71,7 @@ export const mainApi = createApi({
 })
 
 export const {
+  useGetGoogleClientIdQuery,
   useLazyGetCookieTokenQuery,
   useGetUserDataMutation,
   useChangeNicknameMutation,

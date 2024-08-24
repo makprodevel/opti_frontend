@@ -25,7 +25,7 @@ import {
 
 import { useActions } from './hooks/action'
 import { useAppSelector } from './hooks/redux'
-import { HOST } from './config'
+import { WS_URL } from './config'
 
 interface IWebsocketContext {
   isWsOpen: boolean
@@ -70,11 +70,10 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   }
 
   function OpenWebsocket() {
-    const newWs = new WebSocket(`wss://${HOST}/api/chat/ws`)
+    const newWs = new WebSocket(`${WS_URL}/api/chat/ws`)
     ws.current = newWs
     newWs.onmessage = (e) => {
       const data: ClientActionBase = JSON.parse(JSON.parse(e.data))
-      console.log(data)
       switch (data.action_type as ClientActionType) {
         case ClientActionType.getPreview:
           GetPreview(data as IChatsPreview)
@@ -100,7 +99,7 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
       if (isRun.current) OpenWebsocket()
     }
     newWs.onerror = (err) => {
-      console.error('WebSocket  error: ', err)
+      console.error('WebSocket error: ', err)
       newWs.close()
     }
   }

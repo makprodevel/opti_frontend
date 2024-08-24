@@ -1,5 +1,4 @@
 const { protocol, hostname } = window.location
-
-const BACKEND_URL = `${protocol}//${hostname}`
-
-export { BACKEND_URL, hostname as HOST }
+export const BACKEND_URL = `${protocol}//${hostname}`
+export const WS_URL =
+  protocol == 'https:' ? `wss://${hostname}` : `ws://${hostname}`
