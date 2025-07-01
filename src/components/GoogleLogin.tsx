@@ -1,13 +1,12 @@
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'
 import {
-  useGetGoogleClientIdQuery,
   useGetUserDataMutation,
   useLazyGetCookieTokenQuery
 } from '../store/mainApi'
 import { useEffect } from 'react'
 
 export default function GoogleLoginButton() {
-  const { data: googleClientId } = useGetGoogleClientIdQuery()
+  console.log('googleClientId', import.meta.env.VITE_GOOGLE_CLIENT_ID)
   const [triggerGetUserData] = useGetUserDataMutation()
   const [triggerGetCookieToken, { isSuccess }] = useLazyGetCookieTokenQuery()
 
@@ -16,7 +15,9 @@ export default function GoogleLoginButton() {
   }, [isSuccess])
 
   return (
-    <GoogleOAuthProvider clientId={googleClientId?.GOOGLE_CLIENT_ID as string}>
+    <GoogleOAuthProvider
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID as string}
+    >
       <div className="App">
         <GoogleLogin
           onSuccess={async ({ credential }) => {
