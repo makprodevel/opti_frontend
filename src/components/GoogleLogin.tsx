@@ -16,7 +16,9 @@ export default function GoogleLoginButton() {
 
   return (
     <GoogleOAuthProvider
-      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID as string}
+      clientId={
+        '387912847310-3tv8u957n5vk5pcql5n7r6ion05b82m1.apps.googleusercontent.com'
+      }
     >
       <div className="App">
         <GoogleLogin
